@@ -2,12 +2,17 @@ package alchemy;
 
 import java.util.*;
 
+/**
+ * Ingredient type class for OGP alchemy
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class IngredientType {
     // =================================================================================
     // Attributes
     // =================================================================================
 
-    private int standardTemperature;
+    private Temperature standardTemperature;
     private State standardState;
     private Set<String> basicIngredients = new HashSet<>(); // Set to ensure no duplicate basic ingredients (possibly caused by mixing)
 
@@ -23,7 +28,7 @@ public class IngredientType {
      *
      * @note This constructor is package-private: the user cannot use it, only other code can!
      */
-    IngredientType(int standardTemperature, State standardState, Set<String> basicIngredients) {
+    IngredientType(Temperature standardTemperature, State standardState, Set<String> basicIngredients) {
         this.standardTemperature = standardTemperature;
         this.standardState = standardState;
         this.basicIngredients = basicIngredients;
@@ -37,8 +42,17 @@ public class IngredientType {
      *
      * @return Standard temperature for this ingredient type
      */
-    public int getStandardTemperature() {
+    public Temperature getStandardTemperature() {
         return standardTemperature;
+    }
+
+    /**
+     * Get the standard temperature for this ingredient type, displayed in the user format
+     *
+     * @return Standard temperature for this ingredient type, displayed in the user format
+     */
+    public String getStandardTemperatureDisplay() {
+        return standardTemperature.toUser();
     }
 
     /**
@@ -102,7 +116,7 @@ public class IngredientType {
      *
      * @return Whether this basic ingredient name is allowed
      *
-     * @note Not implemented yet! Complex!
+     * @note Not implemented yet! Complex! (WIP)
      */
     private boolean canHaveAsBasicIngredient(String basicIngredient) {
         return true;
