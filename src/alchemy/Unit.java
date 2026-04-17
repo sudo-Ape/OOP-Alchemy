@@ -1,5 +1,8 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
 public enum Unit {
     DROP("drop"),
     SPOON("spoon"),         // 6 drops (L), 6 pinches (P)
@@ -25,7 +28,7 @@ public enum Unit {
      *
      * @note The unit will depend on the state of the ingredient (L or P)
      */
-    protected Unit(String unit) {
+    Unit(String unit) {
         this.unit = unit;
     }
 
@@ -34,7 +37,8 @@ public enum Unit {
      *
      * @return the unit if the ingredient
      */
-    @Basic @Raw
+    @Basic
+    @Raw
     public String getUnit() {
         return unit;
     }
