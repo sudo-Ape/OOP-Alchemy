@@ -7,13 +7,13 @@ public enum Unit {
     BOTTLE("bottle"),       // 3 vials (L)
     JUG("jug"),             // 7 bottles (L)
     BARREL("barrel"),       // 12 jugs (L)
-    STOREROOM("storeroom"); // 5 barrels (L), 5 chests (P)
+    STOREROOM("storeroom"), // 5 barrels (L), 5 chests (P)
 
     PINCH("pinch"),
     SACHET("sachet"),       // 7 spoons (P)
     BOX("box"),             // 6 sachets (P)
     SACK("sack"),           // 3 boxes
-    CHEST("chest"),         // 10 sacks
+    CHEST("chest");         // 10 sacks
 
     private String unit = null;
 

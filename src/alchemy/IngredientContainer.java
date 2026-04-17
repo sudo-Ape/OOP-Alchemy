@@ -2,78 +2,73 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
+/**
+ * Ingredient container class for OGP alchemy
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class IngredientContainer {
-    private int capacity = 0;
-    private int content = 0;
+    private Unit capacity;
+    private Ingredient contents = null;
 
-    /**
-     * Sets the capacity of the container to the given capacity
-     *
-     * @param capacity
-     *        capacity of the container
-     */
-    @Basic @Raw
-    public void setCapacity(int capacity) {
+    public IngredientContainer(Unit capacity, Ingredient contents) {
+        // CAPACITY CANNOT BE SMALLEST OR LARGEST, WIP
         this.capacity = capacity;
+        this.contents = contents;
     }
 
     /**
-     * Sets the content of te
-     * @param content
-     */
-    @Basic @Raw
-    public void setContent(int content) {
-        this.getContent(content);
-    }
-
-    /**
-     * Return the current capacity of the container
+     * Get the unit capacity for this ingredient container
      *
-     * @return capacity of the container
+     * @return Unit capacity for this ingredient container
      */
-    @Basic @Raw
-    public int getCapacity() {
+    public Unit getCapacity() {
         return capacity;
     }
 
     /**
-     * Return the current contents of the container
+     * Set the unit capacity for this ingredient container
      *
-     * @return current content
+     * @param capacity Unit capacity for this ingredient container
      */
-    @Basic @Raw
-    public int getContent() {
-        return content;
+    private void setCapacity(Unit capacity) {
+        this.capacity = capacity;
     }
 
     /**
-     * Adds given amount to current content
+     * Get the ingredient contents of this ingredient container
      *
-     * @effect if the sum of the current content and the amount exceeds the capacity,
-     *         the content is set to the capacity of the container.
-     *      | if (amount + getContent() > getCapacity())
-     *      |   then setContent(getCapacity())
-     *
-     * @effect If the sum of the current content and the amount does not exceed the capacity,
-     *         the content is increased by the given amount.
-     *      | if (amount + getContent() <= getCapacity())
-     *      |   then setContent(getContent() + amount)
-     *
-     * @post If the amount is not positive, the content remains unchanged.
-     *      | if (amount <= 0)
-     *      |   then new.getContent() == getContent()
-     *
-     * @param amount
-     *        Amount added to the content of the oil tank
+     * @return Ingredient contents of this ingredient container
      */
-    public void add(int amount){
-        if (amount > 0) {
-            if (amount + getContent() > getCapacity()) {
-                setContent(getCapacity());
-            } else {
-                setContent(getContent() + amount);
-            }
-        }
+    public Ingredient getContents() {
+        return contents;
     }
 
+    /**
+     * Set the ingredient contents of this ingredient container
+     *
+     * @param contents Ingredient contents of this ingredient container
+     */
+    private void setContents(Ingredient contents) {
+        this.contents = contents;
+    }
+
+    /**
+     * Add given ingredient to this container
+     *
+     * @param ingredient Given ingredient to add
+     *
+     * @throws IllegalArgumentException If the given ingredient cannot be added to this container
+     *      | clanky
+     */
+    public void add(Ingredient ingredient) throws IllegalArgumentException {
+        if (getContents() == null && ingredient.getQuantity().lessThan(getCapacity())) {
+            setContents(ingredient);
+        } else if (getContents().equals(ingredient) && getContents().getQuantity().plus(ingredient.getQuantity()).lessThan(getCapacity())) {
+            getContents().addQuantity(ingredient.getQuantity());
+        }
+
+        // If we got here, something failed
+        throw new IllegalArgumentException("The given ingredient cannot be added to this container!");
+    }
 }

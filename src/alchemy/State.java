@@ -1,28 +1,23 @@
 package alchemy;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum State {
-    LIQUID("liquid"),
-    POWDER("powder");
+    LIQUID(Arrays.asList(Unit.DROP,Unit.SPOON,Unit.VIAL,Unit.BOTTLE,Unit.JUG,Unit.BARREL,Unit.STOREROOM)),
+    POWDER(Arrays.asList(Unit.PINCH,Unit.SPOON,Unit.SACHET,Unit.BOX,Unit.SACK,Unit.CHEST,Unit.STOREROOM));
 
-    private String state = null;
+    private List<Unit> allowedUnits;
 
-    /**
-     * Initialize a new ingredient with a given state
-     *
-     * @param state
-     *        The state of the object being liquid or powder
-     */
-    protected State(String state) {
-        this.state = state;
+    State(List<Unit> allowedUnits) {
+        this.allowedUnits = allowedUnits;
     }
 
-    /**
-     * Returns the current current state of the ingredient
-     *
-     * @return the state in which the ingredient is currently in
-     */
-    @Basic @Raw
-    public String getState() {
-        return state;
+    public List<Unit> getAllowedUnits() {
+        return allowedUnits;
+    }
+
+    public void setAllowedUnits(List<Unit> allowedUnits) {
+        this.allowedUnits = allowedUnits;
     }
 }
