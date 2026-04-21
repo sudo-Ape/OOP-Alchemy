@@ -83,7 +83,7 @@ public class IngredientType {
      * @throws IllegalArgumentException If the given set of basic ingredients is not allowed
      *      | !canHaveAsBasicIngredients(basicIngredients)
      *
-     * @param basicIngredients Given set of basic ingredients
+     * @param basicIngredients Given set of basic ingredient names
      */
     public void setBasicIngredients(Set<String> basicIngredients) throws IllegalArgumentException {
         if (canHaveAsBasicIngredients(basicIngredients)) {
