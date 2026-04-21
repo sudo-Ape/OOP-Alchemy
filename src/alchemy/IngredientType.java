@@ -80,13 +80,17 @@ public class IngredientType {
     /**
      * Set the basic ingredients for this ingredient type
      *
-     * @pre The given set of basic ingredients is allowed
-     *      | canHaveAsBasicIngredients(basicIngredients)
+     * @throws IllegalArgumentException If the given set of basic ingredients is not allowed
+     *      | !canHaveAsBasicIngredients(basicIngredients)
      *
      * @param basicIngredients Given set of basic ingredients
      */
-    public void setBasicIngredients(Set<String> basicIngredients) {
-        this.basicIngredients = basicIngredients;
+    public void setBasicIngredients(Set<String> basicIngredients) throws IllegalArgumentException {
+        if (canHaveAsBasicIngredients(basicIngredients)) {
+            this.basicIngredients = basicIngredients;
+        } else {
+            throw new IllegalArgumentException("At least one of the given basic ingredients is invalid!");
+        }
     }
 
     // =================================================================================

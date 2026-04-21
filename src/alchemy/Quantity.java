@@ -81,17 +81,6 @@ public class Quantity {
     private static void simplifyUnit(){}
 
     /**
-     * Check whether this quantity is less than given other quantity
-     *
-     * @param other Given other quantity
-     *
-     * @return Whether this quantity is less than given other quantity
-     */
-    public boolean lessThan(Quantity other) {
-        return true;
-    }
-
-    /**
      * Check whether this quantity is less than one of the given unit
      *
      * @param unit Given unit
@@ -99,6 +88,7 @@ public class Quantity {
      * @return Whether this quantity is less than one of the given unit
      */
     public boolean lessThan(Unit unit) {
+        // WIP
         return true;
     }
 

@@ -29,23 +29,11 @@ public class Ingredient {
         return specialName;
     }
 
-    /**
-     * Checks if this ingredient equals given other ingredient, ignoring quantity
-     *
-     * @param other Other ingredient to compare with
-     * @return Whether this ingredient equals given other ingredient, ignoring quantity
-     *
-     * @note Not finished! WIP!
-     */
-    public boolean equals(Ingredient other) {
-        return true;
+    public void setSpecialName(String specialName) {
+        this.specialName = specialName;
     }
 
     public void setQuantity(Quantity quantity) {
         this.quantity = quantity;
-    }
-
-    public void addQuantity(Quantity quantity) {
-        this.setQuantity(getQuantity().plus(quantity));
     }
 }

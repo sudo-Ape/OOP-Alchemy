@@ -13,7 +13,7 @@ public class IngredientContainer {
 
     public IngredientContainer(Unit capacity, Ingredient contents) {
         // CAPACITY CANNOT BE SMALLEST OR LARGEST, WIP
-        this.capacity = capacity;
+        this.setCapacity(capacity);
         this.contents = contents;
     }
 
@@ -62,10 +62,9 @@ public class IngredientContainer {
      *      | clanky
      */
     public void add(Ingredient ingredient) throws IllegalArgumentException {
+        // You can only add to an empty container, not add stuff to stuff (this would require hard checks or mixing)
         if (getContents() == null && ingredient.getQuantity().lessThan(getCapacity())) {
             setContents(ingredient);
-        } else if (getContents().equals(ingredient) && getContents().getQuantity().plus(ingredient.getQuantity()).lessThan(getCapacity())) {
-            getContents().addQuantity(ingredient.getQuantity());
         }
 
         // If we got here, something failed
