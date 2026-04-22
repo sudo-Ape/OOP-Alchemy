@@ -88,4 +88,11 @@ public class Temperature {
     public int getValue() {
         return value;
     }
+
+    // =================================================================================
+    // Comparison
+    // =================================================================================
+    public boolean equals(Temperature other) {
+        return this.getValue() == other.getValue();
+    }
 }

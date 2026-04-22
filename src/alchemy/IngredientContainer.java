@@ -12,7 +12,7 @@ public class IngredientContainer {
     private Ingredient contents = null;
 
     public IngredientContainer(Unit capacity, Ingredient contents) {
-        // CAPACITY CANNOT BE SMALLEST OR LARGEST, WIP
+        // CAPACITY CANNOT BE SMALLEST OR LARGEST! WIP
         this.setCapacity(capacity);
         this.contents = contents;
     }
