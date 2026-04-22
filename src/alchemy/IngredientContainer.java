@@ -8,22 +8,31 @@ import be.kuleuven.cs.som.annotate.Raw;
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class IngredientContainer {
+    // =================================================================================
+    // Fields
+    // =================================================================================
     private Unit capacity;
     private Ingredient contents = null;
 
+    // =================================================================================
+    // Constructors
+    // =================================================================================
     public IngredientContainer(Unit capacity, Ingredient contents) {
         // CAPACITY CANNOT BE SMALLEST OR LARGEST! WIP
         this.setCapacity(capacity);
         this.contents = contents;
     }
 
+    // =================================================================================
+    // Setters
+    // =================================================================================
     /**
-     * Get the unit capacity for this ingredient container
+     * Set the ingredient contents of this ingredient container
      *
-     * @return Unit capacity for this ingredient container
+     * @param contents Ingredient contents of this ingredient container
      */
-    public Unit getCapacity() {
-        return capacity;
+    private void setContents(Ingredient contents) {
+        this.contents = contents;
     }
 
     /**
@@ -35,6 +44,10 @@ public class IngredientContainer {
         this.capacity = capacity;
     }
 
+    // =================================================================================
+    // Getters
+    // =================================================================================
+
     /**
      * Get the ingredient contents of this ingredient container
      *
@@ -44,14 +57,19 @@ public class IngredientContainer {
         return contents;
     }
 
+
     /**
-     * Set the ingredient contents of this ingredient container
+     * Get the unit capacity for this ingredient container
      *
-     * @param contents Ingredient contents of this ingredient container
+     * @return Unit capacity for this ingredient container
      */
-    private void setContents(Ingredient contents) {
-        this.contents = contents;
+    public Unit getCapacity() {
+        return capacity;
     }
+
+    // =================================================================================
+    // Methods
+    // =================================================================================
 
     /**
      * Add given ingredient to this container
@@ -59,7 +77,6 @@ public class IngredientContainer {
      * @param ingredient Given ingredient to add
      *
      * @throws IllegalArgumentException If the given ingredient cannot be added to this container
-     *      | clanky
      */
     public void add(Ingredient ingredient) throws IllegalArgumentException {
         // You can only add to an empty container, not add stuff to stuff (this would require hard checks or mixing)

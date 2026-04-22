@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class Ingredient {
     // =================================================================================
-    // Attributes
+    // Fields
     // =================================================================================
     private IngredientType ingredientType;
     private Temperature temperature;

@@ -1,7 +1,8 @@
 <component name="libraryTable">
   <library name="AnnotationsDoclets">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Documents/Coding/Java/OGP/AnnotationsDoclets.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Coding/Java/OGP/AnnotationsDoclets.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../AnnotationsDoclets.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

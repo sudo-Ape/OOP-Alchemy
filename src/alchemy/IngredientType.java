@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class IngredientType {
     // =================================================================================
-    // Attributes
+    // Fields
     // =================================================================================
 
     private Temperature standardTemperature;

@@ -5,24 +5,31 @@ import be.kuleuven.cs.som.annotate.Raw;
 import java.util.*;
 
 /**
- * Quantity helper class for OGP alchemy
+ * Describes the quantity of the ingredient types
  *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class Quantity {
     // =================================================================================
-    // Attributes
+    // Fields
     // =================================================================================
     private State state;
     private Map<Unit,Integer> amounts;
 
+
     // =================================================================================
     // Constructor
     // =================================================================================
+
     /**
-     *
      * @pre The given amounts should be valid
      *      | canHaveAsAmounts(amounts,state)
+     *
+     * @effect State is set to given state
+     *      | setState
+     *
+     * @effect Amount is set to given amount
+     *      | setAmount
      *
      * @param state The given state
      *
@@ -33,48 +40,10 @@ public class Quantity {
         setAmounts(amounts);
     }
 
+
     // =================================================================================
-    // Amounts: setting/getting
+    // Getters
     // =================================================================================
-
-
-    /**
-     * Set the amounts map for this quantity
-     *
-     * @param amounts Amounts map for this quantity
-     */
-    private void setAmounts(Map<Unit, Integer> amounts) {
-        this.amounts = amounts;
-    }
-
-    /**
-     * Get the amount that this quantity has of a given unit
-     *
-     * @param unit Given unit
-     *
-     * @return The amount that this quantity has of the given unit
-     */
-    public int getAmountOf(Unit unit) {
-        // Return the unit if key set, or 0 if this is not in keys
-        return amounts.getOrDefault(unit,0);
-    }
-
-    /**
-     * Check if given amounts map is allowed for the given state
-     *
-     * @param amounts Given amounts map
-     * @param state Given state to check validity for
-     *
-     * @return Whether the given amounts map is allowed for the given state
-     */
-    private static boolean canHaveAsAmounts(Map<Unit, Integer> amounts, State state) {
-        for (Unit unit : amounts.keySet()) {
-            if (!(state.getAllowedUnits().contains(unit))) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Calculate the number of spoons based on the current unit the ingredient type has
@@ -92,6 +61,52 @@ public class Quantity {
             total += unit.getSpoons() * value;
         }
         return total;
+    }
+
+    /**
+     * Get the amount that this quantity has of a given unit
+     *
+     * @param unit Given unit
+     *
+     * @return The amount that this quantity has of the given unit
+     */
+    public int getAmountOf(Unit unit) {
+        // Return the unit if key set, or 0 if this is not in keys
+        return amounts.getOrDefault(unit,0);
+    }
+
+    // =================================================================================
+    // Setter
+    // =================================================================================
+
+    /**
+     * Set the amounts map for this quantity
+     *
+     * @param amounts Amounts map for this quantity
+     */
+    private void setAmounts(Map<Unit, Integer> amounts) {
+        this.amounts = amounts;
+    }
+
+    // =================================================================================
+    // Inspector
+    // =================================================================================
+
+    /**
+     * Check if given amounts map is allowed for the given state
+     *
+     * @param amounts Given amounts map
+     * @param state Given state to check validity for
+     *
+     * @return Whether the given amounts map is allowed for the given state
+     */
+    private static boolean canHaveAsAmounts(Map<Unit, Integer> amounts, State state) {
+        for (Unit unit : amounts.keySet()) {
+            if (!(state.getAllowedUnits().contains(unit))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // =================================================================================

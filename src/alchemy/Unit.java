@@ -3,6 +3,9 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
+/**
+ * Represents an object's measurement unit
+ */
 public enum Unit {
     // =================================================================================
     // Enum definitions
@@ -22,7 +25,7 @@ public enum Unit {
     CHEST(1260);
 
     // =================================================================================
-    // Attributes
+    // Fields
     // =================================================================================
     private float spoons;
 
@@ -44,9 +47,9 @@ public enum Unit {
     // Getters
     // =================================================================================
     /**
-     * Get the amount of spoons this unit is equal to
+     * Get the number of spoons this unit is equal to
      *
-     * @return Amount of spoons this unit is equal to
+     * @return Number of spoons this unit is equal to
      */
     public float getSpoons() {
         return spoons;
