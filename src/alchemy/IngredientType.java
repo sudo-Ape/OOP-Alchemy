@@ -93,6 +93,24 @@ public class IngredientType {
         }
     }
 
+    /**
+     * Sets the standard temperature of this ingredient type
+     *
+     * @param standardTemperature The given standard temperature
+     */
+    private void setStandardTemperature(Temperature standardTemperature) {
+        this.standardTemperature = standardTemperature;
+    }
+
+    /**
+     * Sets the standard state of this ingredient type
+     *
+     * @param standardState The given standard state
+     */
+    private void setStandardState(State standardState) {
+        this.standardState = standardState;
+    }
+
     // =================================================================================
     // Inspectors
     // =================================================================================
