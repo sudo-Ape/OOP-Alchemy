@@ -1,12 +1,24 @@
 package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 
 import java.util.*;
 
+/**
+ * Quantity helper class for OGP alchemy
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class Quantity {
+    // =================================================================================
+    // Attributes
+    // =================================================================================
     private State state;
-    private final Map<Unit,Integer> amounts;
+    private Map<Unit,Integer> amounts;
 
+    // =================================================================================
+    // Constructor
+    // =================================================================================
     /**
      *
      * @pre The given amounts should be valid
@@ -17,18 +29,34 @@ public class Quantity {
      * @param amounts The given amounts (per unit)
      */
     public Quantity(State state, Map<Unit, Integer> amounts) {
-        this.state = state;
+        setState(state);
+        setAmounts(amounts);
+    }
+
+    // =================================================================================
+    // Amounts: setting/getting
+    // =================================================================================
+
+
+    /**
+     * Set the amounts map for this quantity
+     *
+     * @param amounts Amounts map for this quantity
+     */
+    private void setAmounts(Map<Unit, Integer> amounts) {
         this.amounts = amounts;
     }
 
     /**
+     * Get the amount that this quantity has of a given unit
      *
+     * @param unit Given unit
      *
-     * @param unit
-     * @return
+     * @return The amount that this quantity has of the given unit
      */
     public int getAmountOf(Unit unit) {
-        return amounts.get(unit);
+        // Return the unit if key set, or 0 if this is not in keys
+        return amounts.getOrDefault(unit,0);
     }
 
     /**
@@ -66,6 +94,9 @@ public class Quantity {
         return total;
     }
 
+    // =================================================================================
+    // Calculation methods
+    // =================================================================================
     /**
      * Sum a list of quantities to a given goal state, with proper rounding
      *
@@ -161,7 +192,7 @@ public class Quantity {
     /**
      * Convert the units of the ingredient to the most efficient unit to store the ingredient in
      */
-    private Quantity simplifyUnit() {
+    public void simplifyUnit() {
         double totalSpoons = getSpoons();
         State myState = getState();
 
@@ -175,10 +206,13 @@ public class Quantity {
             totalSpoons = remainder;
         }
 
-        // Return the new quantity
-        return new Quantity(getState(),outputQuantityMap);
+        // Set the new quantity
+        this.amounts = outputQuantityMap;
     }
 
+    // =================================================================================
+    // Other methods
+    // =================================================================================
     /**
      * Check whether this quantity is less than one of the given unit
      *
@@ -202,6 +236,9 @@ public class Quantity {
         return true;
     }
 
+    // =================================================================================
+    // State
+    // =================================================================================
     /**
      * Get the state associated with this quantity
      *
@@ -210,5 +247,14 @@ public class Quantity {
     @Basic @Raw
     public State getState() {
         return state;
+    }
+
+    /**
+     * Set the state for this quantity
+     *
+     * @param state Given state
+     */
+    private void setState(State state) {
+        this.state = state;
     }
 }

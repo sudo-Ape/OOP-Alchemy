@@ -4,23 +4,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum State {
+    // =================================================================================
+    // Enum definitions
+    // =================================================================================
     // IMPORTANT: ordered from smallest to largest!
     LIQUID(Arrays.asList(Unit.DROP,Unit.SPOON,Unit.VIAL,Unit.BOTTLE,Unit.JUG,Unit.BARREL,Unit.STOREROOM)),
     POWDER(Arrays.asList(Unit.PINCH,Unit.SPOON,Unit.SACHET,Unit.BOX,Unit.SACK,Unit.CHEST,Unit.STOREROOM));
 
-    // field
+    // =================================================================================
+    // Attributes
+    // =================================================================================
     private List<Unit> allowedUnits;
 
-    // constructor
+    // =================================================================================
+    // Constructor
+    // =================================================================================
     State(List<Unit> allowedUnits) {
         this.allowedUnits = allowedUnits;
     }
 
+    // =================================================================================
+    // Getters
+    // =================================================================================
     public List<Unit> getAllowedUnits() {
         return allowedUnits;
-    }
-
-    public void setAllowedUnits(List<Unit> allowedUnits) {
-        this.allowedUnits = allowedUnits;
     }
 }
