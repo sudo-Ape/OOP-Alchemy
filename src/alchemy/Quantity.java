@@ -236,8 +236,7 @@ public class Quantity {
      * @return Whether this quantity is less than one of the given unit
      */
     public boolean lessThan(Unit unit) {
-        // WIP
-        return true;
+        return getSpoons() < unit.getSpoons();
     }
 
     /**
