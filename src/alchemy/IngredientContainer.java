@@ -101,38 +101,33 @@ public class IngredientContainer {
      * Add given ingredient to this container
      *
      * @param ingredient Given ingredient to add
-     *
-     * @throws IllegalArgumentException If the given ingredient cannot be added to this container
+     * @throws IllegalArgumentException - If the given ingredient is null
+     *                                  - If the container is not empty and the ingredient is of a different type
+     *                                  - If adding the ingredient would exceed this container's capacity
      */
     public void add(Ingredient ingredient) throws IllegalArgumentException {
         if (ingredient == null)
             throw new IllegalArgumentException("Cannot add null ingredient.");
 
-        // Container is empty
-        if (getContents() == null) {
-            if (ingredient.getQuantity().getSpoons() > getCapacity().getSpoons())
+        if (getContents() == null) { // Container is empty
+            if (!ingredient.getQuantity().lessThan(getCapacity())) {
                 throw new IllegalArgumentException("Ingredient quantity exceeds container capacity.");
+            }
             setContents(ingredient);
-
-        } else {
+        } else { // Container already has contents
             // Check if the container allows the ingredient
             if (!getContents().equals(ingredient)) {
                 throw new IllegalArgumentException("Ingredient type does not match container contents.");
+            }
 
             // Check if sum of both ingredients exceeds the capacity
-            double combinedSpoons = getContents().getQuantity().getSpoons()
-                    + ingredient.getQuantity().getSpoons();
-            if (combinedSpoons > getCapacity().getSpoons())
+            Quantity combinedSpoons = getContents().getQuantity().plus(ingredient.getQuantity());
+            if (!combinedSpoons.lessThan(getCapacity())) {
                 throw new IllegalArgumentException("Combined quantity exceeds container capacity.");
+            }
 
-
-            Quantity merged = getContents().getQuantity().plus(ingredient.getQuantity());
-            setContents(new Ingredient(
-                    getContents().getIngredientType(),
-                    getContents().getTemperature(),
-                    getContents().getState(),
-                    merged
-            ));
+            // Nothing went wrong, update the quantity
+            getContents().setQuantity(combinedSpoons);
         }
     }
 }

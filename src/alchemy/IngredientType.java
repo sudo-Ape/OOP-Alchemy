@@ -136,11 +136,31 @@ public class IngredientType {
      *
      * @param basicIngredient Basic ingredient name to check
      *
-     * @return Whether this basic ingredient name is allowed
-     *
-     * @note Not implemented yet! Complex! (WIP)
+     * @return Whether this basic ingredient name is al
      */
     private boolean canHaveAsBasicIngredient(String basicIngredient) {
+        if (basicIngredient.isEmpty()) {
+            return false;
+        }
+
+        if (!(basicIngredient.matches("[a-zA-Z'() ]*"))) {
+            return false;
+        }
+
+        String[] words = basicIngredient.split(" ");
+
+        if (words.length == 1) { // Only one word
+            if (words[0].length() < 3) {
+                return false;
+            }
+        } else { // Multiple words
+            for (String word : words) {
+                if (word.length() < 2) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -179,5 +199,14 @@ public class IngredientType {
         }
 
         return output;
+    }
+
+    // =================================================================================
+    // Comparison
+    // =================================================================================
+    public boolean equals(IngredientType other) {
+        return getStandardState() == other.getStandardState() &&
+               getStandardTemperature().equals(other.getStandardTemperature()) &&
+               getBasicIngredients().equals(other.getBasicIngredients());
     }
 }

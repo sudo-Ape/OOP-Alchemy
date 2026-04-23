@@ -114,7 +114,7 @@ public class Ingredient {
      *
      * @param quantity Given quantity
      */
-    private void setQuantity(Quantity quantity) {
+    void setQuantity(Quantity quantity) {
         this.quantity = quantity;
     }
 
@@ -184,5 +184,11 @@ public class Ingredient {
         } else { // Temp > st. temp (heated)
             return "Heated"+getIngredientType().getSimpleName();
         }
+    }
+
+    public boolean equals(Ingredient other) {
+        return getState() == other.getState() &&
+               getTemperature().equals(other.getTemperature()) &&
+               getIngredientType().equals(other.getIngredientType());
     }
 }

@@ -27,7 +27,7 @@ public enum Unit {
     // =================================================================================
     // Fields
     // =================================================================================
-    private float spoons;
+    private double spoons;
 
     // =================================================================================
     // Constructor
@@ -39,7 +39,7 @@ public enum Unit {
      *
      * @note The unit will depend on the state of the ingredient (L or P)
      */
-    Unit(float spoons) {
+    Unit(double spoons) {
         this.spoons = spoons;
     }
 
@@ -51,7 +51,7 @@ public enum Unit {
      *
      * @return Number of spoons this unit is equal to
      */
-    public float getSpoons() {
+    public double getSpoons() {
         return spoons;
     }
 }

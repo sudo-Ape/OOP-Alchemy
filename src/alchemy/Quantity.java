@@ -246,8 +246,7 @@ public class Quantity {
      * @return Whether this quantity is less than the given quantity
      */
     public boolean lessThan(Quantity other) {
-        // WIP
-        return true;
+        return getSpoons() < other.getSpoons();
     }
 
     // =================================================================================

@@ -57,7 +57,7 @@ public class Temperature {
         int right = Integer.parseInt(parts[1]);
 
         if (left != 0 && right != 0) {
-            throw new TemperatureException("The given temperature is invalid!");
+            throw new TemperatureException("The given temperature is invalid.");
         }
 
         return (left == 0) ? right : -left;
