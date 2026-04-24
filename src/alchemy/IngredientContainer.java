@@ -19,10 +19,27 @@ public class IngredientContainer {
     // =================================================================================
     // Constructors
     // =================================================================================
+
+    /**
+     * Create a new ingredient container of given unit capacity and with given contents
+     *
+     * @param capacity Given unit capacity
+     * @param contents Given contents
+     */
     public IngredientContainer(Unit capacity, Ingredient contents) {
-        // CAPACITY CANNOT BE SMALLEST OR LARGEST! WIP
         this.setCapacity(capacity);
-        this.setContents(contents);
+        this.setContents(null);
+        this.add(contents);
+    }
+
+    /**
+     * Create a new empty ingredient container of given unit capacity
+     *
+     * @param capacity Given unit capacity
+     */
+    public IngredientContainer(Unit capacity) {
+        this.setCapacity(capacity);
+        this.setContents(null);
     }
 
     // =================================================================================

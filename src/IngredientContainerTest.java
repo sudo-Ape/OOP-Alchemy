@@ -29,14 +29,46 @@ public class IngredientContainerTest {
     // Tests
     // =================================================================================
     @Test
-    public void placeholderTest() {
+    public void constructorTest() {
         // Your test here
 
         assertEquals(2,1+1);
     }
 
     @Test
-    public void placeholderExceptionTest() {
+    public void emptyConstructorTest() {
+        // Your test here
+
+        assertEquals(2,1+1);
+    }
+
+    @Test
+    public void addTest() {
+        // Your test here
+
+        assertEquals(2,1+1);
+    }
+
+    @Test
+    public void illegalCapacityTest() { // Try illegally setting to smallest/highest unit of a state
+        assertThrows(ArithmeticException.class, () -> {
+            // Your test here
+
+            int result = 12 / 0;
+        });
+    }
+
+    @Test
+    public void illegalAddTest1() { // Try overflowing the container
+        assertThrows(ArithmeticException.class, () -> {
+            // Your test here
+
+            int result = 12 / 0;
+        });
+    }
+
+    @Test
+    public void illegalAddTest2() { // Try adding non-equal ingredient to partially filled container
         assertThrows(ArithmeticException.class, () -> {
             // Your test here
 

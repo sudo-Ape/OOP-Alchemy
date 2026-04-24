@@ -29,9 +29,9 @@ public class IngredientType {
      * @note This constructor is package-private: the user cannot use it, only other code can!
      */
     IngredientType(Temperature standardTemperature, State standardState, Set<String> basicIngredients) {
-        this.standardTemperature = standardTemperature;
-        this.standardState = standardState;
-        this.basicIngredients = basicIngredients;
+        this.setStandardTemperature(standardTemperature);
+        this.setStandardState(standardState);
+        this.setBasicIngredients(basicIngredients);
     }
 
     // =================================================================================
@@ -139,16 +139,33 @@ public class IngredientType {
      * @return Whether this basic ingredient name is al
      */
     private boolean canHaveAsBasicIngredient(String basicIngredient) {
+        // No empty strings
         if (basicIngredient.isEmpty()) {
             return false;
         }
 
-        if (!(basicIngredient.matches("[a-zA-Z'() ]*"))) {
+        // Legal characters only (p{L} is a unicode letter category containing letters from every language, so that letters like ï are allowed!)
+        if (!(basicIngredient.matches("[\\p{L}'() ]*"))) {
             return false;
         }
 
+        // Analyze word by word
         String[] words = basicIngredient.split(" ");
 
+        // Every word starts with capital or special character, other letters are not capital
+        for (String word : words) {
+            if (!(Character.isUpperCase(word.charAt(0)) || !Character.isLetter(word.charAt(0)))) {
+                return false;
+            }
+
+            for (int i = 1; i < word.length(); i++) {
+                if (Character.isUpperCase(word.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+
+        // Word length checking
         if (words.length == 1) { // Only one word
             if (words[0].length() < 3) {
                 return false;
