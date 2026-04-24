@@ -100,7 +100,7 @@ public class Quantity {
      *
      * @return Whether the given amounts map is allowed for the given state
      */
-    private static boolean canHaveAsAmounts(Map<Unit, Integer> amounts, State state) {
+    public static boolean canHaveAsAmounts(Map<Unit, Integer> amounts, State state) {
         for (Unit unit : amounts.keySet()) {
             if (!(state.getAllowedUnits().contains(unit))) {
                 return false;
@@ -185,18 +185,14 @@ public class Quantity {
     /**
      * Return this quantity plus given other quantity, assuming both are of the same state
      *
+     * @pre This quantity and given quantity are of equal state
+     *      | getState() == other.getState()
+     *
      * @param other Other quantity to sum with
      *
      * @return New quantity equal to this quantity plus given other quantity
-     *
-     * @throws IllegalArgumentException If this quantity and given other quantity are not of equal state
-     *      | !getState().equals(other.getState())
      */
-    public Quantity plus(Quantity other) throws IllegalArgumentException {
-        if (!getState().equals(other.getState())) {
-            throw new IllegalArgumentException("This and given quantity are not of equal state!");
-        }
-
+    public Quantity plus(Quantity other) {
         List<Quantity> input = new ArrayList<>();
         input.add(this);
         input.add(other);

@@ -22,7 +22,7 @@ public class IngredientContainer {
     public IngredientContainer(Unit capacity, Ingredient contents) {
         // CAPACITY CANNOT BE SMALLEST OR LARGEST! WIP
         this.setCapacity(capacity);
-        this.contents = contents;
+        this.setContents(contents);
     }
 
     // =================================================================================
@@ -53,8 +53,6 @@ public class IngredientContainer {
      *                                  - If the container currently holds an ingredient whose quantity exceeds the given capacity
      * @post The capacity of the container is set to the given unit
      * @note I think the capacity should always be initialized before the content to avoid the last 2 throws WIP?
-     *
-     * @note make extendable
      */
     private void setCapacity(Unit capacity) throws IllegalArgumentException {
         // 1. Basic check
