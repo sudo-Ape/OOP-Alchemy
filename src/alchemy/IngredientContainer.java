@@ -145,5 +145,19 @@ public class IngredientContainer {
             getContents().setQuantity(combinedSpoons);
         }
     }
+
+    /**
+     * Empties the given container
+     *
+     * @effect Contents of the given container is set to null
+     *      | setContents(null)
+     */
+    public void empty(){
+        setContents(null);
+    }
+
+    public boolean isEmpty(){
+        return this.getContents() == null;
+    }
 }
 

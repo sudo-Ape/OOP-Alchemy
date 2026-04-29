@@ -201,7 +201,6 @@ public class Quantity {
     }
 
     /**
-     * Convert the units of the ingredient to the most efficient unit to store the ingredient in
      */
     public void simplifyUnit() {
         double totalSpoons = getSpoons();
