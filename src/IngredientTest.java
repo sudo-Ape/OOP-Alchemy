@@ -122,7 +122,7 @@ public class IngredientTest {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<Unit, Integer> myQuantities = new HashMap<>();
             myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("COOL INGREDIENT","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+            Ingredient myIngredient = new Ingredient("CLANKER CAKE","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
         });
     }
 }

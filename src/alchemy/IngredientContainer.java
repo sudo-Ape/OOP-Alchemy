@@ -15,6 +15,7 @@ public class IngredientContainer {
     // =================================================================================
     private Unit capacity;
     private Ingredient contents = null;
+    private boolean terminated;
 
     // =================================================================================
     // Constructors
@@ -50,8 +51,13 @@ public class IngredientContainer {
      * Set the ingredient contents of this ingredient container
      *
      * @param contents Ingredient contents of this ingredient container
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    private void setContents(Ingredient contents) {
+    private void setContents(Ingredient contents) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
         this.contents = contents;
     }
 
@@ -69,9 +75,14 @@ public class IngredientContainer {
      *
      *                                  - If the container currently holds an ingredient whose quantity exceeds the given capacity
      * @post The capacity of the container is set to the given unit
-     * @note I think the capacity should always be initialized before the content to avoid the last 2 throws WIP?
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    private void setCapacity(Unit capacity) throws IllegalArgumentException {
+    private void setCapacity(Unit capacity) throws IllegalArgumentException, IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
+
         // 1. Basic check
         if (capacity == null) throw new IllegalArgumentException("Null capacity");
 
@@ -93,8 +104,13 @@ public class IngredientContainer {
      * Get the ingredient contents of this ingredient container
      *
      * @return Ingredient contents of this ingredient container
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    public Ingredient getContents() {
+    public Ingredient getContents() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
         return contents;
     }
 
@@ -103,8 +119,14 @@ public class IngredientContainer {
      * Get the unit capacity for this ingredient container
      *
      * @return Unit capacity for this ingredient container
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    public Unit getCapacity() {
+    public Unit getCapacity() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
+
         return capacity;
     }
 
@@ -119,8 +141,14 @@ public class IngredientContainer {
      * @throws IllegalArgumentException - If the given ingredient is null
      *                                  - If the container is not empty and the ingredient is of a different type
      *                                  - If adding the ingredient would exceed this container's capacity
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    public void add(Ingredient ingredient) throws IllegalArgumentException {
+    public void add(Ingredient ingredient) throws IllegalArgumentException, IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
+
         if (ingredient == null)
             throw new IllegalArgumentException("Cannot add null ingredient.");
 
@@ -151,13 +179,39 @@ public class IngredientContainer {
      *
      * @effect Contents of the given container is set to null
      *      | setContents(null)
+     *
+     * @throws IllegalStateException If container is terminated
      */
-    public void empty(){
+    public void empty() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
+
         setContents(null);
     }
 
-    public boolean isEmpty(){
+    /**
+     * Check whether this container is empty
+     *
+     * @return Whether this container is empty
+     *
+     * @throws IllegalStateException If container is terminated
+     */
+    public boolean isEmpty() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This container has been terminated.");
+        }
+
         return this.getContents() == null;
+    }
+
+    /**
+     * Check whether this device has been terminated
+     *
+     * @return Whether this device has been terminated
+     */
+    public boolean isTerminated() {
+        return terminated;
     }
 }
 

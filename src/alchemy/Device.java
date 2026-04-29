@@ -10,26 +10,33 @@ public abstract class Device {
     // =================================================================================
 
     protected List<Ingredient> InternalIngredients = new ArrayList<>();
-    private boolean isTerminated = false;
+    private boolean terminated = false;
+    protected Ingredient result = null;
 
-
+    // =================================================================================
+    // Constructor
+    // =================================================================================
+    public Device() {}
 
     // =================================================================================
     // Methods
     // =================================================================================
-
-
     /**
      * Adds a given amount of a certain ingredient to the device
      * The container is emptied after extraction (destructive operation)
      *
      * @param container Ingredientcontainer to extract from
-     * @throws IllegalStateException if device is terminated
-     * @throws IllegalStateException if container is null or emoty
+     * @throws IllegalStateException If device is terminated
+     * @throws IllegalStateException If container is null or empty
      *
+     * @post Given container is emptied
+     *      | WIP
+     *
+     * @post Given container is terminated
+     *      | WIP
      */
-    public void add(IngredientContainer container) throws IllegalStateException{
-        if (this.isTerminated){
+    public void add(IngredientContainer container) throws IllegalStateException {
+        if (isTerminated()){
             throw new IllegalStateException("Device is terminated.");
         }
         if (container == null || container.isEmpty()) {
@@ -53,30 +60,27 @@ public abstract class Device {
      * Returns a new IngredientContainer with the result
      *
      * @return IngredientContainer containing the result ingredient
-     * @throws IllegalStateException if device is terminated
-     * @throws IllegalStateException if device is empty
+     * @throws IllegalStateException If device is terminated
+     * @throws IllegalStateException If device contains no result
      */
-    public IngredientContainer collect() throws IllegalStateException{
-        if (this.isTerminated){
+    public IngredientContainer collect() throws IllegalStateException {
+        if (isTerminated()){
             throw new IllegalStateException("Device is terminated.");
         }
-        if (InternalIngredients.isEmpty()) {
-            throw new IllegalStateException("Device is either empty or does not exist.");
+        if (result == null) {
+            throw new IllegalStateException("No result exists for this device.");
         }
 
-        // Retrieve the single processed result ingredient
-        Ingredient resultIngredient = InternalIngredients.getFirst();
-
         // Choose an appropriate container unit for the result
-        Unit chosenUnit = selectAppropriateUnit(resultIngredient);
+        Unit chosenUnit = selectAppropriateUnit(result);
 
         // Construct a new IngredientContainer with the chosen unit and result ingredient
-        IngredientContainer result = new IngredientContainer(chosenUnit, resultIngredient);
+        IngredientContainer resultContainer = new IngredientContainer(chosenUnit, result);
 
-        // Clear InternalIngredients so the device is empty after collection
-        InternalIngredients.empty();
+        // Clear result
+        result = null;
 
-        return result;
+        return resultContainer;
     }
 
     /**
@@ -88,12 +92,15 @@ public abstract class Device {
      *
      * @param ingredient The ingredient to select a unit for
      * @return The most appropriate Unit
+     *
+     * @throws IllegalArgumentException If the given ingredient does not fit into a container.
+     *      | WIP
      */
-    private Unit selectAppropriateUnit(Ingredient ingredient){
+    private static Unit selectAppropriateUnit(Ingredient ingredient) throws IllegalArgumentException {
         List<Unit> allowed = ingredient.getState().getAllowedUnits();
 
-        // Loop backwards from second-to-last to second-first
-        for (int i = allowed.size() - 2; i >= 1; i--) {
+        // Loop forwards from second to second-to-last
+        for (int i = 1; i < allowed.size() - 1; i++) {
             Unit unit = allowed.get(i);
 
             // Check if the ingredient's quantity fits in this unit
@@ -102,19 +109,25 @@ public abstract class Device {
             }
         }
 
-        // Fallback: return the second-to last unit
-        return allowed.get(allowed.size() - 2);
+        throw new IllegalArgumentException("The given ingredient does not fit into a container.");
     }
 
-
     /**
-     * Abstract method to be implemented by device subclasses.
-     * This is where the actual alchemical transformation happens.
+     * Run the device on the set ingredient contents
      *
-     * Subclasses should override this to:
-     * - Modify the ingredient(s) in InternalIngredients
-     * - Create new ingredient(s) as needed
-     * - Replace the original ingredients with the result(s)
+     * @post Result is set to device's function result
+     *
+     * @post Internal ingredients list is emptied
+     *      | WIP
      */
     public abstract void run();
+
+    /**
+     * Check whether this device has been terminated
+     *
+     * @return Whether this device has been terminated
+     */
+    public boolean isTerminated() {
+        return terminated;
+    }
 }
