@@ -9,7 +9,7 @@ public abstract class Device {
     // Fields
     // =================================================================================
 
-    protected List<Ingredient> InternalIngredients = new ArrayList<>();
+    protected List<Ingredient> internalIngredients = new ArrayList<>();
     private boolean terminated = false;
     protected Ingredient result = null;
 
@@ -25,7 +25,7 @@ public abstract class Device {
      * Adds a given amount of a certain ingredient to the device
      * The container is emptied after extraction (destructive operation)
      *
-     * @param container Ingredientcontainer to extract from
+     * @param container IngredientContainer to extract from
      * @throws IllegalStateException If device is terminated
      * @throws IllegalStateException If container is null or empty
      *
@@ -47,7 +47,7 @@ public abstract class Device {
         Ingredient toAdd = container.getContents();
 
         // Add the ingredients to device's internal list
-        this.InternalIngredients.add(toAdd);
+        this.internalIngredients.add(toAdd);
 
         // Empty the container
         container.empty();
