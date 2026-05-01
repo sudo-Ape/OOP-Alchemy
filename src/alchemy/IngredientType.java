@@ -69,7 +69,7 @@ public class IngredientType {
      *
      * @return Basic ingredients list for this ingredient type
      */
-    private Set<String> getBasicIngredients() {
+    Set<String> getBasicIngredients() {
         return basicIngredients;
     }
 

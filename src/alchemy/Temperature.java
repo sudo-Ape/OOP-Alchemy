@@ -92,7 +92,34 @@ public class Temperature {
     // =================================================================================
     // Comparison
     // =================================================================================
+    /**
+     * Check whether this temperature equals another
+     *
+     * @param other Given other temperature
+     * @return Whether this temperature equals given other temperature
+     */
     public boolean equals(Temperature other) {
         return this.getValue() == other.getValue();
+    }
+
+    /**
+     * Get the absolute difference between this and a given other temperature
+     *
+     * @param other Given other temperature
+     *
+     * @return Absolute difference in value between this and given other temperature
+     */
+    public int difference(Temperature other) {
+        return Math.abs(getValue() - other.getValue());
+    }
+
+    /**
+     * Check whether this temperature value is less than given other temperature's value
+     *
+     * @param other Given other temperature
+     * @return Whether this temperature value is less than given other temperature's value
+     */
+    public boolean lessThan(Temperature other) {
+        return this.getValue() < other.getValue();
     }
 }
