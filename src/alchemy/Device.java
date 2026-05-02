@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Device {
+    // WIP: all devices' run methods should throw exceptions if the device is not in a laboratory (getLocation() == null)
+    // WIP: proper termination (terminate() method and checks in every other method), for all classes?
 
     // =================================================================================
     // Fields
@@ -12,11 +14,37 @@ public abstract class Device {
     protected List<Ingredient> internalIngredients = new ArrayList<>();
     private boolean terminated = false;
     protected Ingredient result = null;
+    private Laboratory location = null;
 
     // =================================================================================
     // Constructor
     // =================================================================================
     public Device() {}
+
+    // =================================================================================
+    // Location
+    // =================================================================================
+
+    /**
+     * Get the location of this device
+     *
+     * @return Current location of this device
+     */
+    public Laboratory getLocation() {
+        return location;
+    }
+
+    /**
+     * Set the location for this device
+     *
+     * @param location New location for this device
+     *
+     * @note This method is package-private: only laboratories can call this method when you add a device to them (bidirectional association).
+     */
+    void setLocation(Laboratory location) {
+        this.location = location;
+    }
+
 
     // =================================================================================
     // Methods
@@ -27,7 +55,8 @@ public abstract class Device {
      *
      * @param container IngredientContainer to extract from
      * @throws IllegalStateException If device is terminated
-     * @throws IllegalStateException If container is null or empty
+     * @throws IllegalArgumentException If container is null or empty
+     * @throws IllegalStateException If device is not in a laboratory
      *
      * @post Given container is emptied
      *      | WIP
@@ -35,12 +64,15 @@ public abstract class Device {
      * @post Given container is terminated
      *      | WIP
      */
-    public void add(IngredientContainer container) throws IllegalStateException {
+    public void add(IngredientContainer container) throws IllegalStateException, IllegalArgumentException {
+        if (getLocation() == null) {
+            throw new IllegalStateException("Device is not in a (valid) laboratory.");
+        }
         if (isTerminated()){
             throw new IllegalStateException("Device is terminated.");
         }
         if (container == null || container.isEmpty()) {
-            throw new IllegalStateException("Container is empty or null");
+            throw new IllegalArgumentException("Container is empty or null");
         }
 
         // Retrieve the ingredient from the container
@@ -62,8 +94,12 @@ public abstract class Device {
      * @return IngredientContainer containing the result ingredient
      * @throws IllegalStateException If device is terminated
      * @throws IllegalStateException If device contains no result
+     * @throws IllegalStateException If device is not in a laboratory
      */
     public IngredientContainer collect() throws IllegalStateException {
+        if (getLocation() == null) {
+            throw new IllegalStateException("Device is not in a (valid) laboratory.");
+        }
         if (isTerminated()){
             throw new IllegalStateException("Device is terminated.");
         }
@@ -72,7 +108,7 @@ public abstract class Device {
         }
 
         // Choose an appropriate container unit for the result
-        Unit chosenUnit = selectAppropriateUnit(result);
+        Unit chosenUnit = Quantity.selectAppropriateUnit(result);
 
         // Construct a new IngredientContainer with the chosen unit and result ingredient
         IngredientContainer resultContainer = new IngredientContainer(chosenUnit, result);
@@ -81,35 +117,6 @@ public abstract class Device {
         result = null;
 
         return resultContainer;
-    }
-
-    /**
-     * Selects the most appropriate Unit for storing the given ingredient.
-     *
-     * 1. Get all allowed units for the ingredient's state (LIQUID or POWDER)
-     * 2. Loop from the largest to smallest unit (excluding extremes: PINCH/DROP and STOREROOM)
-     * 3. Return the first (largest) unit that can hold the ingredient's quantity
-     *
-     * @param ingredient The ingredient to select a unit for
-     * @return The most appropriate Unit
-     *
-     * @throws IllegalArgumentException If the given ingredient does not fit into a container.
-     *      | WIP
-     */
-    private static Unit selectAppropriateUnit(Ingredient ingredient) throws IllegalArgumentException {
-        List<Unit> allowed = ingredient.getState().getAllowedUnits();
-
-        // Loop forwards from second to second-to-last
-        for (int i = 1; i < allowed.size() - 1; i++) {
-            Unit unit = allowed.get(i);
-
-            // Check if the ingredient's quantity fits in this unit
-            if (ingredient.getQuantity().lessThan(unit)){
-                return unit;
-            }
-        }
-
-        throw new IllegalArgumentException("The given ingredient does not fit into a container.");
     }
 
     /**

@@ -23,7 +23,6 @@ public class Kettle extends Device {
 
     /**
      * Static method to mix a given list of ingredients.
-     *
      * - Name:                 Union of all basicIngredients sets; forms name automatically.
      * - State:                State of the ingredient whose standard temperature is closest
      *                         to stateDiffTemperature (default 20); LIQUID beats POWDER on a tie.
@@ -60,7 +59,7 @@ public class Kettle extends Device {
 
             // State and standard temperature: track ingredient closest to stateDiffTemperature
             int dist = type.getStandardTemperature().difference(stateDiffTemperature);
-            if (dist < nearestToStateDiff) {
+            if (dist < nearestToStateDiff || resultStdTemp == null) {
                 nearestToStateDiff = dist;
                 resultState = ingredient.getState();
                 resultStdTemp = type.getStandardTemperature();
@@ -68,7 +67,7 @@ public class Kettle extends Device {
                 if (ingredient.getState() == priorityState) {
                     resultState = priorityState;
                 }
-                if (resultStdTemp == null || resultStdTemp.lessThan(type.getStandardTemperature())) {
+                if (resultStdTemp.lessThan(type.getStandardTemperature())) {
                     resultStdTemp = type.getStandardTemperature();
                 }
             }
@@ -85,9 +84,7 @@ public class Kettle extends Device {
         // --------- Combine ---------
         Quantity resultQuantity = Quantity.sum(quantities, resultState);
 
-        int resultTempValue = totalSpoons > 0
-                ? (int) Math.round(weightedTempSum / totalSpoons)
-                : stateDiffTemperature.getValue();
+        int resultTempValue = totalSpoons > 0 ? (int) Math.round(weightedTempSum / totalSpoons) : stateDiffTemperature.getValue();
 
         IngredientType resultType = new IngredientType(resultStdTemp, resultState, totalBasicIngredients);
         return new Ingredient(resultType, new Temperature(resultTempValue), resultState, resultQuantity);

@@ -10,24 +10,25 @@ public enum Unit {
     // =================================================================================
     // Enum definitions
     // =================================================================================
-    DROP((float) 1 /8),
-    SPOON(1),
-    VIAL(5),
-    BOTTLE(15),
-    JUG(105),
-    BARREL(1260),
-    STOREROOM(6300),
+    DROP((float) 1/8,"drop"),
+    SPOON(1,"spoon"),
+    VIAL(5,"vial"),
+    BOTTLE(15,"bottle"),
+    JUG(105,"jug"),
+    BARREL(1260,"barrel"),
+    STOREROOM(6300,"storeroom"),
 
-    PINCH((float) 1 /6),
-    SACHET(7),
-    BOX(42),
-    SACK(126),
-    CHEST(1260);
+    PINCH((float) 1/6,"pinch"),
+    SACHET(7,"sachet"),
+    BOX(42,"box"),
+    SACK(126,"sack"),
+    CHEST(1260,"chest");
 
     // =================================================================================
     // Fields
     // =================================================================================
     private double spoons;
+    private String displayName;
 
     // =================================================================================
     // Constructor
@@ -39,8 +40,9 @@ public enum Unit {
      *
      * @note The unit will depend on the state of the ingredient (L or P)
      */
-    Unit(double spoons) {
+    Unit(double spoons, String displayName) {
         this.spoons = spoons;
+        this.displayName = displayName;
     }
 
     // =================================================================================
@@ -53,5 +55,14 @@ public enum Unit {
      */
     public double getSpoons() {
         return spoons;
+    }
+
+    /**
+     * Get the display name for this unit
+     *
+     * @return Display name for this unit
+     */
+    public String getDisplayName() {
+        return displayName;
     }
 }

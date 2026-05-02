@@ -86,8 +86,10 @@ public class Ingredient {
      * Set the temperature of this ingredient
      *
      * @param temperature Given temperature
+     *
+     * @note This method is package-private: the user should not randomly change the state, but specific in-package uses will!
      */
-    private void setTemperature(Temperature temperature) {
+    void setTemperature(Temperature temperature) {
         this.temperature = temperature;
     }
 
@@ -95,8 +97,10 @@ public class Ingredient {
      * Set the state of this ingredient
      *
      * @param state Given state
+     *
+     * @note This method is package-private: the user should not randomly change the state, but specific in-package uses will!
      */
-    private void setState(State state) {
+    void setState(State state) {
         this.state = state;
     }
 
@@ -113,6 +117,8 @@ public class Ingredient {
      * Set the quantity of this ingredient
      *
      * @param quantity Given quantity
+     *
+     * @note This method is package-private: the user should not randomly change an ingredient's quantity, only specific in-package use-cases will do this!
      */
     void setQuantity(Quantity quantity) {
         this.quantity = quantity;

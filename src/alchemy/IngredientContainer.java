@@ -43,6 +43,16 @@ public class IngredientContainer {
         this.setContents(null);
     }
 
+    /**
+     * Create a new ingredient container with given contents and corresponding minimum capacity
+     *
+     * @param contents Given contents
+     */
+    public IngredientContainer(Ingredient contents) {
+        this.setCapacity(Quantity.selectAppropriateUnit(contents));
+        this.setContents(contents);
+    }
+
     // =================================================================================
     // Setters
     // =================================================================================
@@ -65,15 +75,9 @@ public class IngredientContainer {
      * Set the unit capacity for this ingredient container
      *
      * @param capacity Unit capacity for this ingredient container
-     * @throws IllegalArgumentException - If the given capacity is null
+     * @throws IllegalArgumentException If the given capacity is null
+     * @throws IllegalArgumentException If the given capacity is a unit for which no container exists, specifically DROP, PINCH and STOREROOM
      *
-     *                                  - If the given capacity is a unit for which no container exists,
-     *                                  specifically DROP, PINCH and STOREROOM
-     *
-     *                                  - If the current container currently holds an ingredient and the new capacity is not compatible with
-     *                                  the ingredient's current state
-     *
-     *                                  - If the container currently holds an ingredient whose quantity exceeds the given capacity
      * @post The capacity of the container is set to the given unit
      *
      * @throws IllegalStateException If container is terminated
@@ -138,9 +142,9 @@ public class IngredientContainer {
      * Add given ingredient to this container
      *
      * @param ingredient Given ingredient to add
-     * @throws IllegalArgumentException - If the given ingredient is null
-     *                                  - If the container is not empty and the ingredient is of a different type
-     *                                  - If adding the ingredient would exceed this container's capacity
+     * @throws IllegalArgumentException If the given ingredient is null
+     * @throws IllegalArgumentException If the container is not empty and the ingredient is of a different type
+     * @throws IllegalArgumentException If adding the ingredient would exceed this container's capacity
      *
      * @throws IllegalStateException If container is terminated
      */

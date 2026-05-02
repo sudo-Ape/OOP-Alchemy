@@ -92,11 +92,12 @@ public class Temperature {
     // =================================================================================
     // Comparison
     // =================================================================================
+
     /**
-     * Check whether this temperature equals another
+     * Check whether this temperature equals a given other
      *
      * @param other Given other temperature
-     * @return Whether this temperature equals given other temperature
+     * @return Whether this temperature equals a given other
      */
     public boolean equals(Temperature other) {
         return this.getValue() == other.getValue();
