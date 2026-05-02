@@ -3,6 +3,11 @@ package alchemy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Laboratory class for the storing of ingredients and machines
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class Laboratory {
     // =================================================================================
     // Fields

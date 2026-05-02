@@ -1,5 +1,10 @@
 package alchemy;
 
+/**
+ * Cooling box class for a machine that cools down ingredients in the laboratory
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class CoolingBox extends Device {
     // =================================================================================
     // Fields

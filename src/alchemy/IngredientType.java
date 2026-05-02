@@ -3,17 +3,43 @@ package alchemy;
 import java.util.*;
 
 /**
- * Ingredient type class for OGP alchemy
+ * Ingredient type class to hold fixed standard information about an ingredient
  *
- * @author Casper Vermeeren; LoÃ¯ck Sansen
+ * @invar List of basic ingredients must always be valid
+ *      | hasProperBasicIngredients()
+ *
+ * @invar Standard temperature must always be valid
+ *      | canHaveAsStandardTemperature(getStandardTemperature())
+ *
+ * @author Casper Vermeeren; Loïck Sansen
  */
 public class IngredientType {
     // =================================================================================
     // Fields
     // =================================================================================
-
+    /**
+     * Variable referencing the standard temperature of this ingredient type
+     *
+     * @invar standardTemperature references an effective object
+     *      | standardTemperature != null
+     */
     private Temperature standardTemperature;
+
+    /**
+     * Variable referencing the state enum of this ingredient type
+     */
     private State standardState;
+
+    /**
+     * Variable referencing a set containing the basic ingredient names present in this ingredient type
+     *
+     * @invar basicIngredients references an effective set
+     *      | basicIngredients != null
+     *
+     * @invar Each string element in the set follows the encapsulated ruleset
+     *      | for each S in basicIngredients:
+     *      |  canHaveAsBasicIngredient(S)
+     */
     private Set<String> basicIngredients = new HashSet<>(); // Set to ensure no duplicate basic ingredients (possibly caused by mixing)
 
     // =================================================================================
@@ -120,9 +146,12 @@ public class IngredientType {
      *
      * @param basicIngredients Given list of basic ingredients to check
      *
-     * @return Whether this list of basic ingredients is allowed
+     * @return Whether this list of basic ingredients is allowed by checking if each individual string is allowed
+     *      | for S in basicIngredients:
+     *      |  if not canHaveAsBasicIngredient(S): result == false
+     *      | result == true
      */
-    private boolean canHaveAsBasicIngredients(Set<String> basicIngredients) {
+    public static boolean canHaveAsBasicIngredients(Set<String> basicIngredients) {
         for (String ingredient : basicIngredients) {
             if (!canHaveAsBasicIngredient(ingredient)) {
                 return false;
@@ -136,9 +165,17 @@ public class IngredientType {
      *
      * @param basicIngredient Basic ingredient name to check
      *
-     * @return Whether this basic ingredient name is al
+     * @return False if string is empty; false if string contains illegal characters; false if each word does not start with capital or non-letter; false if non-first letters of word are capital; false if one word of length < 3; false if multiple words with at least one word of length < 2; true otherwise
+     *      | if (basicIngredient == ""): result == false
+     *      | if (!basicIngredient.matches("[\\p{L}'() ]*"): result == false
+     *      | for word in basicIngredient.words():
+     *      |  if (!(word[0].isCapital() || word[0].isNonLetter())): result == false
+     *      |  for i in 1..word.size():
+     *      |   if (word[i].isCapital()): result == false
+     *      |  if (basicIngredient.words().size() == 1 && word.size() < 3): result == false
+     *      |  else if (word.size() < 2): result == false
      */
-    private boolean canHaveAsBasicIngredient(String basicIngredient) {
+    public static boolean canHaveAsBasicIngredient(String basicIngredient) {
         // No empty strings
         if (basicIngredient.isEmpty()) {
             return false;
@@ -181,13 +218,38 @@ public class IngredientType {
         return true;
     }
 
+    /**
+     * Check whether this ingredient type has a valid set of basic ingredients
+     *
+     * @return Whether this ingredient type has a valid set of basic ingredients
+     *      | canHaveAsBasicIngredients(getBasicIngredients())
+     */
+    public boolean hasProperBasicIngredients() {
+        return canHaveAsBasicIngredients(getBasicIngredients());
+    }
+
+    /**
+     * Check if given standard temperature is valid
+     *
+     * @param standardTemperature Given standard temperature to check
+     *
+     * @return False if given standard temperature is null; true otherwise
+     *      | result == (standardTemperature != null)
+     *
+     * @note No deeper checks on the validity of a temperature need to be performed, since the Temperature class logic assures no broken objects can be formed.
+     */
+    public static boolean canHaveAsStandardTemperature(Temperature standardTemperature) {
+        return standardTemperature != null;
+    }
+
     // =================================================================================
     // Simple name
     // =================================================================================
     /**
      * Get the simple name for this ingredient type
      *
-     * @return Simple name for this ingredient type
+     * @return Name consisting of all basic ingredients ordered alphabetically, connected by "mixed with", "and", and appropriate punctuation
+     *      | result == sorted(basicIngredients)[0]+" mixed with "+sorted(basicIngredients)[1]+", "+ ... +", "+sorted(basicIngredients)[-2]+", and "+sorted(basicIngredients)[-1]
      */
     public String getSimpleName() {
         String output = "";
@@ -221,6 +283,15 @@ public class IngredientType {
     // =================================================================================
     // Comparison
     // =================================================================================
+
+    /**
+     * Check whether this ingredient type equals another given ingredient type
+     *
+     * @param other Given other ingredient type
+     *
+     * @return True if equal standard state, equal standard temperature, and equal basic ingredients; false otherwise
+     *      | result == (this.getStandardState() == other.getStandardState() && this.getStandardTemperature().equals(other.getStandardTemperature()) && this.getBasicIngredients().equals(other.getBasicIngredients()))
+     */
     public boolean equals(IngredientType other) {
         return getStandardState() == other.getStandardState() &&
                getStandardTemperature().equals(other.getStandardTemperature()) &&

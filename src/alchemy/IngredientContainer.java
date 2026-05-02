@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 import java.util.List;
 
 /**
- * Ingredient container class for OGP alchemy
+ * Ingredient container class to hold ingredients
  *
  * @author Casper Vermeeren; Loïck Sansen
  */

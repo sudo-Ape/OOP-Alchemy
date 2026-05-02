@@ -7,7 +7,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * Represents the physical state of an object and its corresponding measurement unit
+ * Enum to describe the physical state of an object
  */
 public enum State {
     // =================================================================================

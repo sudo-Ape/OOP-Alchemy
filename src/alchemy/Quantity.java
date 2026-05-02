@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 import java.util.*;
 
 /**
- * Describes the quantity of the ingredient types
+ * Helper class to describe the quantity of ingredients
  *
  * @author Casper Vermeeren; Loïck Sansen
  */

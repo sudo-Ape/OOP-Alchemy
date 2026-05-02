@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Ingredient class for OGP alchemy
+ * Main alchemic ingredient class
  *
  * @author Casper Vermeeren; Loïck Sansen
  */

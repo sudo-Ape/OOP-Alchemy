@@ -5,6 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Kettle class for a machine that mixes ingredients in the laboratory
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class Kettle extends Device {
     // =================================================================================
     // Fields

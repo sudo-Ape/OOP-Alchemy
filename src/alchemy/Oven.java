@@ -1,5 +1,10 @@
 package alchemy;
 
+/**
+ * Oven class for a machine that heats up ingredients in the laboratory
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public class Oven extends Device {
     // =================================================================================
     // Fields

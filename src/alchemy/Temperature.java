@@ -1,9 +1,9 @@
 package alchemy;
 
 /**
- * Simple temperature class for OGP Alchemy
+ * Helper class to describe the temperature of ingredients and ingredient types
  *
- * @author Casper Vermeeren; LoÃ¯ck Sansen
+ * @author Casper Vermeeren; Loïck Sansen
  */
 public class Temperature {
     // =================================================================================
@@ -44,11 +44,11 @@ public class Temperature {
      *
      * @param userTemperature User-formatted input, e.g. "(50,0)" for -50
      *
-     * @throws TemperatureException If both cool/heat are non-zero
+     * @throws IllegalArgumentException If both cool/heat are non-zero
      *
      * @return Integer temperature based on user-formatted input
      */
-    private static int fromUser(String userTemperature) throws TemperatureException {
+    private static int fromUser(String userTemperature) throws IllegalArgumentException {
         // Strip parentheses/spaces and split by comma
         String clean = userTemperature.replaceAll("[()\\s]", "");
         String[] parts = clean.split(",");
@@ -57,7 +57,7 @@ public class Temperature {
         int right = Integer.parseInt(parts[1]);
 
         if (left != 0 && right != 0) {
-            throw new TemperatureException("The given temperature is invalid.");
+            throw new IllegalArgumentException("The given temperature is invalid.");
         }
 
         return (left == 0) ? right : -left;

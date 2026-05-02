@@ -4,7 +4,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
 /**
- * Represents an object's measurement unit
+ * Enum to represent an object's measurement unit
  */
 public enum Unit {
     // =================================================================================

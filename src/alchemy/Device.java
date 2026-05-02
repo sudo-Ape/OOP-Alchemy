@@ -3,6 +3,11 @@ package alchemy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abstract Device class for machines in a laboratory
+ *
+ * @author Casper Vermeeren; Loïck Sansen
+ */
 public abstract class Device {
     // WIP: all devices' run methods should throw exceptions if the device is not in a laboratory (getLocation() == null)
     // WIP: proper termination (terminate() method and checks in every other method), for all classes?
