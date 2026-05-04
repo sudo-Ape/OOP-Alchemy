@@ -81,18 +81,9 @@ All devices expose `add(IngredientContainer)`, `execute()`, and `result()`.
 - JUnit 5 (for running tests)
 - Intellij IDE (recommended) or any Java IDE
 
-### Build & Run
-```bash
-# Clone the repository
-git clone https://github.com/<your-team>/<repo-name>.git
-cd <repo-name>
-
-# Compile
-javac -d out src/**/*.java
-
-# Run tests (JUnit)
-# Use your IDE's test runner, or configure a build tool such as Maven/Gradle
-```
+### Setup
+1. Import the project into your Java IDE: **File → Import → Existing Projects into Workspace**
+2. Run tests via **Run → Run As → JUnit Test**
 
 ---
 
