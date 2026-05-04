@@ -140,5 +140,5 @@ uml_design.pdf
 
 ## 👥 Authors
 
-- <!-- Loïck Sansen -->
-- <!-- Casper Vermeeren -->
+- Loïck Sansen
+- Casper Vermeeren
