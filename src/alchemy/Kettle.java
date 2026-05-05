@@ -14,20 +14,55 @@ public class Kettle extends Device {
     // =================================================================================
     // Fields
     // =================================================================================
+    /**
+     * This temperature determines which (standard) state and standard temperature comes out of a mixture,
+     * as this is chosen by the mix ingredient whose own standard temperature is closest to stateDiffTemperature.
+     */
     private static final Temperature stateDiffTemperature = new Temperature(20);
+
+    /**
+     * This state wins ties if they come up when determining (standard) state, aka when two ingredients of different states are
+     * both closest to stateDiffTemperature, the priorityState will win.
+     */
     private static final State priorityState = State.LIQUID;
 
     // =================================================================================
     // Mixing methods
     // =================================================================================
+
+    /**
+     * Run the kettle on its internal ingredients
+     *
+     * @throws IllegalStateException If there are no internal ingredients stored
+     *      | internalIngredients.isEmpty()
+     *
+     * @throws IllegalStateException If the kettle is not inside a laboratory
+     *      | getLocation() == null
+     *
+     * @post Device result is set to mixing result
+     *      | result == Kettle.mix(internalIngredients)
+     *
+     * @post Internal ingredients list is emptied
+     *      | new.internalIngredients.isEmpty()
+     */
     @Override
-    public void run() {
+    public void run() throws IllegalStateException {
+        if (internalIngredients.isEmpty()) {
+            throw new IllegalStateException("The storage of the kettle is empty.");
+        }
+
+        if (getLocation() == null) {
+            throw new IllegalStateException("Kettle is not in a (valid) laboratory.");
+        }
+
         result = mix(internalIngredients);
+
+        // Clear internal ingredients
         internalIngredients.clear();
     }
 
     /**
-     * Static method to mix a given list of ingredients.
+     * Static method to mix a given list of ingredients. Procedures per property are given as:
      * - Name:                 Union of all basicIngredients sets; forms name automatically.
      * - State:                State of the ingredient whose standard temperature is closest
      *                         to stateDiffTemperature (default 20); LIQUID beats POWDER on a tie.
@@ -37,7 +72,10 @@ public class Kettle extends Device {
      * - Temperature:          Weighted average of current temperatures, weighted by spoons.
      *
      * @param ingredients Given list of ingredients to mix
+     *
      * @return New ingredient as mix of given ingredients, or null if the list is null/empty
+     *      | Formal definition of this method is too complex.
+     *
      * @note A static method is required here for later use in Laboratory.
      */
     public static Ingredient mix(List<Ingredient> ingredients) {

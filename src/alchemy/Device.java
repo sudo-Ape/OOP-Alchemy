@@ -6,24 +6,49 @@ import java.util.List;
 /**
  * Abstract Device class for machines in a laboratory
  *
+ * @invar List of internal ingredient must always be valid
+ *      | canHaveAsInternalIngredients(internalIngredients)
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public abstract class Device {
-    // WIP: all devices' run methods should throw exceptions if the device is not in a laboratory (getLocation() == null)
-    // WIP: proper termination (terminate() method and checks in every other method), for all classes?
-
     // =================================================================================
     // Fields
     // =================================================================================
-
+    /**
+     * List of ingredients currently inside the device
+     *
+     * @invar internalIngredients must be an effective list
+     *      | internalIngredients != null
+     *
+     * @invar Each Ingredient in internalIngredients must be an effective Ingredient
+     *      | for ingredient in internalIngredients:
+     *      |   ingredient != null
+     */
     protected List<Ingredient> internalIngredients = new ArrayList<>();
+
+    /**
+     * Boolean indicating whether this device has been terminated
+     */
     private boolean terminated = false;
+
+    /**
+     * Result of the alchemic operation formed by Device's subclass implementations
+     */
     protected Ingredient result = null;
+
+    /**
+     * Current location of the device: either a Laboratory or null if placed nowhere. A device can only be used if it is inside a Laboratory.
+     */
     private Laboratory location = null;
 
     // =================================================================================
     // Constructor
     // =================================================================================
+
+    /**
+     * Create a new device
+     */
     public Device() {}
 
     // =================================================================================
@@ -44,6 +69,9 @@ public abstract class Device {
      *
      * @param location New location for this device
      *
+     * @post Location is given location
+     *      | new.getLocation() == location
+     *
      * @note This method is package-private: only laboratories can call this method when you add a device to them (bidirectional association).
      */
     void setLocation(Laboratory location) {
@@ -55,19 +83,24 @@ public abstract class Device {
     // Methods
     // =================================================================================
     /**
-     * Adds a given amount of a certain ingredient to the device
-     * The container is emptied after extraction (destructive operation)
+     * Adds contents of given ingredient container to the device
      *
      * @param container IngredientContainer to extract from
+     *
      * @throws IllegalStateException If device is terminated
+     *      | isTerminated()
+     *
      * @throws IllegalArgumentException If container is null or empty
+     *      | container == null || container.isEmpty()
+     *
      * @throws IllegalStateException If device is not in a laboratory
+     *      | getLocation() == null
      *
      * @post Given container is emptied
      *      | WIP
      *
      * @post Given container is terminated
-     *      | WIP
+     *      | container.isTerminated()
      */
     public void add(IngredientContainer container) throws IllegalStateException, IllegalArgumentException {
         if (getLocation() == null) {
@@ -88,18 +121,27 @@ public abstract class Device {
 
         // Empty the container
         container.empty();
+        // WIP need to terminate the container still, after terminate() is made, also is emptying even necessary then? (if not remove post too)
     }
 
 
     /**
-     * Collects the result of the alchemical transformation
-     * Must be called after run() has been completed
-     * Returns a new IngredientContainer with the result
+     * Collects the result of the alchemical transformation into a fitting container, to be called after run() has been completed
      *
      * @return IngredientContainer containing the result ingredient
+     *      | result == new IngredientContainer(Quantity.selectAppropriateUnit(result),result)
+     *
+     * @post Result is removed from device
+     *      | new.result == null
+     *
      * @throws IllegalStateException If device is terminated
+     *      | isTerminated()
+     *
      * @throws IllegalStateException If device contains no result
+     *      | result == null
+     *
      * @throws IllegalStateException If device is not in a laboratory
+     *      | getLocation() == null
      */
     public IngredientContainer collect() throws IllegalStateException {
         if (getLocation() == null) {
@@ -141,5 +183,30 @@ public abstract class Device {
      */
     public boolean isTerminated() {
         return terminated;
+    }
+
+    /**
+     * Check whether given list of internal ingredients is valid
+     *
+     * @param internalIngredients Given list of internal ingredients
+     *
+     * @return True if list is non-null and all its contents are non-null; false otherwise
+     *      | if internalIngredients == null: result == false
+     *      | for ingredient in internalIngredients:
+     *      |   if ingredient == null: result == false
+     *      | result == true
+     */
+    public static boolean canHaveAsInternalIngredients(List<Ingredient> internalIngredients) {
+        if (internalIngredients == null) {
+            return false;
+        }
+
+        for (Ingredient ingredient : internalIngredients) {
+            if (ingredient == null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

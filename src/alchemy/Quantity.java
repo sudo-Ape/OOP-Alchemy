@@ -7,15 +7,32 @@ import java.util.*;
 /**
  * Helper class to describe the quantity of ingredients
  *
+ * @invar Amounts map must always be valid
+ *      | canHaveAsAmounts(amounts)
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class Quantity {
     // =================================================================================
     // Fields
     // =================================================================================
+    /**
+     * State enum associated with this quantity, for checking allowed units
+     */
     private State state;
-    private Map<Unit,Integer> amounts;
 
+    /**
+     * Main map object that holds what amounts of each unit this quantity comprises
+     *
+     * @invar Only state-allowed units should be used as keys
+     *      | for unit in amounts.keys:
+     *      |   state.getAllowedUnits().contains(unit)
+     *
+     * @invar Values should never be negative
+     *      | for val in amounts.values:
+     *      |   val >= 0
+     */
+    private Map<Unit,Integer> amounts;
 
     // =================================================================================
     // Constructors
@@ -30,8 +47,8 @@ public class Quantity {
      * @effect State is set to given state
      *      | setState(state)
      *
-     * @effect Amount is set to given amount
-     *      | setAmount(amounts)
+     * @effect Amounts are set to given amounts
+     *      | setAmounts(amounts)
      *
      * @param state The given state
      * @param amounts The given amounts (per unit)
@@ -63,9 +80,10 @@ public class Quantity {
     // =================================================================================
 
     /**
-     * Calculate the number of spoons based on the current unit the ingredient type has
+     * Calculate the total number of spoons this quantity is equal to
      *
-     * @return The number of spoons
+     * @return The total, over all units, this quantity is equal to
+     *      | result == sum([unit.getSpoons() * value for (unit,value) in amounts])
      */
     @Basic @Raw
     public double getSpoons() {
@@ -85,7 +103,8 @@ public class Quantity {
      *
      * @param unit Given unit
      *
-     * @return The amount that this quantity has of the given unit
+     * @return The amount that this quantity has of the given unit; zero if unset
+     *      | result == amounts.getOrDefault(unit)
      */
     public int getAmountOf(Unit unit) {
         // Return the unit if key set, or 0 if this is not in keys
@@ -93,21 +112,20 @@ public class Quantity {
     }
 
     // =================================================================================
-    // Setter
+    // Amounts
     // =================================================================================
 
     /**
      * Set the amounts map for this quantity
      *
      * @param amounts Amounts map for this quantity
+     *
+     * @post Amounts map is set to given map object
+     *      | new.amounts == amounts
      */
     private void setAmounts(Map<Unit, Integer> amounts) {
         this.amounts = amounts;
     }
-
-    // =================================================================================
-    // Inspector
-    // =================================================================================
 
     /**
      * Check if given amounts map is allowed for the given state
@@ -115,11 +133,24 @@ public class Quantity {
      * @param amounts Given amounts map
      * @param state Given state to check validity for
      *
-     * @return Whether the given amounts map is allowed for the given state
+     * @return True if map is non-null, if all key units are present in state's allowed units list and all amount values are non-negative; false otherwise
+     *      | if amounts == null: result == false
+     *      | for unit in amounts.keys:
+     *      |   if not state.getAllowedUnits.contains(unit): result == false
+     *      |   if amounts[unit] < 0: result == false
+     *      | result == true
      */
     public static boolean canHaveAsAmounts(Map<Unit, Integer> amounts, State state) {
+        if (amounts == null) {
+            return false;
+        }
+
         for (Unit unit : amounts.keySet()) {
-            if (!(state.getAllowedUnits().contains(unit))) {
+            if (!(state.getAllowedUnits().contains(unit))) { // Unit must be in state's allowed list
+                return false;
+            }
+
+            if (amounts.get(unit) < 0) { // Actual amounts cannot be negative
                 return false;
             }
         }
@@ -133,9 +164,11 @@ public class Quantity {
      * Sum a list of quantities to a given goal state, with proper rounding
      *
      * @param quantities List of quantities to sum to given state
+     *
      * @param goalState Given state to sum to, determines rounding
      *
      * @return New quantity equal to the (rounded) sum of the given quantities, in given goal state
+     *      | WIP (please god nee please)
      */
     public static Quantity sum(List<Quantity> quantities, State goalState) {
         // Sort by state
@@ -188,18 +221,17 @@ public class Quantity {
     }
 
     /**
-     * Return this quantity plus given other quantity
+     * Return this quantity plus given other quantity, in some goal state
      *
      * @param other Other quantity to sum with
      *
-     * @return New quantity equal to this quantity plus given other quantity
+     * @param goalState Goal state for output quantity
+     *
+     * @return New quantity equal to this quantity plus given other quantity, in goal state
+     *      | result == Quantity.sum([this,other],goalState)
      */
     public Quantity plus(Quantity other, State goalState) {
-        List<Quantity> input = new ArrayList<>();
-        input.add(this);
-        input.add(other);
-
-        return sum(input, goalState);
+        return sum(List.of(this,other), goalState);
     }
 
     /**
@@ -211,16 +243,17 @@ public class Quantity {
      * @param other Other quantity to sum with
      *
      * @return New quantity equal to this quantity plus given other quantity
+     *      | result == Quantity.sum([this,other], this.getState())
      */
     public Quantity plus(Quantity other) {
-        List<Quantity> input = new ArrayList<>();
-        input.add(this);
-        input.add(other);
-
-        return sum(input, getState());
+        return this.plus(other,getState());
     }
 
     /**
+     * Simplify this unit to the most expanded form it can be
+     *
+     * @post Unit's map layout (x spoons, y sacks, z barrels, ...) is as optimal as possible, meaning no unit amounts overflow into the next unit's worth
+     *      | WIP (ik denk dat het niet van ons verwacht wordt dat we dit soort dingen formeel kunnen lol)
      */
     public void simplifyUnit() {
         double totalSpoons = getSpoons();
@@ -253,6 +286,7 @@ public class Quantity {
      *      | other.lessThan(this)
      *
      * @return New quantity equal to this quantity minus given other quantity
+     *      | WIP
      */
     public Quantity minus(Quantity other) {
         double resultingSpoons = getSpoons() - other.getSpoons();
@@ -274,12 +308,25 @@ public class Quantity {
     // =================================================================================
     // Other methods
     // =================================================================================
+
+    /**
+     * Get a quantity equal to this quantity, but with state changed to given newState
+     *
+     * @param newState Given new state
+     * @return New quantity with same contents (possibly rounded by state/unit allowances) and new state
+     *      | result == Quantity.sum([this],newState)
+     */
+    public Quantity toState(State newState) {
+        return Quantity.sum(List.of(this),newState);
+    }
+
     /**
      * Check whether this quantity is less than or equal to one of the given unit
      *
      * @param unit Given unit
      *
-     * @return Whether this quantity is less than or equal to one of the given unit
+     * @return Whether this quantity's spoon value is less than or equal to the given unit's spoon value
+     *      | result == (getSpoons() <= unit.getSpoons())
      */
     public boolean lessThan(Unit unit) {
         return getSpoons() <= unit.getSpoons();
@@ -289,7 +336,9 @@ public class Quantity {
      * Check whether this quantity is less than or equal to the given quantity
      *
      * @param other Other quantity
-     * @return Whether this quantity is less than or equal to the given quantity
+     *
+     * @return Whether this quantity's spoon value is less than or equal to the given quantity's spoon value
+     *      | result == (getSpoons() <= other.getSpoons())
      */
     public boolean lessThan(Quantity other) {
         return getSpoons() <= other.getSpoons();
@@ -299,10 +348,12 @@ public class Quantity {
      * Selects the minimum appropriate Unit for storing the given ingredient.
      *
      * @param ingredient The ingredient to select a unit for
-     * @return The minimum appropriate Unit
+     *
+     * @return The minimum appropriate Unit: where the ingredient's quantity fits into the resulting Unit, but not a smaller Unit
+     *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().itemBefore(result))
      *
      * @throws IllegalArgumentException If the given ingredient does not fit into a container.
-     *      | WIP
+     *      | WIP, also this should be nominal...
      */
     public static Unit selectAppropriateUnit(Ingredient ingredient) throws IllegalArgumentException {
         List<Unit> allowed = ingredient.getState().getAllowedUnits();
@@ -324,6 +375,7 @@ public class Quantity {
      * Check whether this quantity is equal to zero
      *
      * @return Whether this quantity is equal to zero
+     *      | getSpoons() == 0
      */
     public boolean isZero() {
         return getSpoons() == 0;
@@ -346,6 +398,9 @@ public class Quantity {
      * Set the state for this quantity
      *
      * @param state Given state
+     *
+     * @post State is given state
+     *      | new.getState() == state
      */
     private void setState(State state) {
         this.state = state;
@@ -354,7 +409,11 @@ public class Quantity {
     /**
      * Get a string reflecting the amounts held by this quantity
      *
-     * @return String reflecting the amounts held by this quantity
+     * @return Non-ordered string constructed as "AMOUNT0 UNIT0NAME, AMOUNT1 UNIT1NAME, ..."
+     *      | output = ""
+     *      | for unit in amounts.keys:
+     *      |   output += "amounts[unit] unit.getDisplayName()"
+     *      | result == output
      */
     public String getDisplay() {
         String output = "";

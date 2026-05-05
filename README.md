@@ -16,23 +16,21 @@ The codebase demonstrates applied OOP principles including encapsulation strateg
 
 ```
 src/
-├── AlchemicIngredient.java     # Ingredient instances with quantity & temperature
+├── Ingredient.java     # Ingredient instances with quantity & temperature
 ├── IngredientType.java         # Immutable substance properties (name, standard temperature, standard state)
 ├── IngredientContainer.java    # Physical containers for transporting and storing ingredients
-├── devices/
-│   ├── CoolingBox.java         # Cools a single ingredient to a configured target temperature
-│   ├── Oven.java               # Heats a single ingredient (±5 unit precision)
-│   ├── Kettle.java             # Combines multiple ingredients into a new compound
-│   └── Transmogrifier.java     # Converts ingredient state between Liquid and Powder
-├── Laboratory.java             # Houses devices and manages ingredient inventory
-├── Recipe.java                 # Ordered sequence of alchemical operations
-└── RecipeBook.java             # Ordered collection of recipes
+├── Devices (abstract)
+├── CoolingBox.java         # Cools a single ingredient to a configured target temperature
+├── Oven.java               # Heats a single ingredient (±5 unit precision)
+├── Kettle.java             # Combines multiple ingredients into a new compound
+├── Transmogrifier.java     # Converts ingredient state between Liquid and Powder
+└── Laboratory.java             # Houses devices and manages ingredient inventory
 
 test/
-├── CoolingBoxTest.java
-├── OvenTest.java
-├── KettleTest.java
-└── TransmogrifierTest.java
+├── Devicetest.java
+├── IngredientContainer.java
+├── IngredientTest.java
+└── LaboratoryTest.java
 ```
 
 ---
@@ -69,10 +67,6 @@ All devices share a consistent interface: `add(IngredientContainer)`, `execute()
 ### Laboratory
 
 The laboratory serves as the central inventory manager. It normalises ingredient temperatures on storage, merges newly added stock with existing inventory of the same type (via the Kettle), and supports retrieval by name and quantity or by full available stock. Each laboratory holds at most one device of each type, and the device–laboratory relationship is bidirectional.
-
-### Recipes and Recipe Books
-
-A `Recipe` is composed of three parallel lists: operations, ingredient names, and quantities. Supported operations are `add`, `heat` (+10 temperature units), `cool` (−10 temperature units), and `mix`. The laboratory's `execute(Recipe, int)` method runs a recipe against a quantity multiplier, handling partial execution gracefully by returning intermediate results and unused ingredients to storage. A `RecipeBook` is an ordered collection of recipes; removing a recipe from one book has no effect on others.
 
 ---
 

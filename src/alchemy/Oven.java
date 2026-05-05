@@ -17,7 +17,9 @@ public class Oven extends Device {
     // Constructor
     // =================================================================================
 
-    public Oven() {}
+    public Oven(Temperature temperature) {
+        this.setTemperature(temperature);
+    }
 
     // =================================================================================
     // Temperature
@@ -47,33 +49,36 @@ public class Oven extends Device {
 
     @Override
     public void add(IngredientContainer container) throws IllegalStateException {
-        if (internalIngredients.size() >= 1) {
+        if (!internalIngredients.isEmpty()) {
             throw new IllegalStateException("Oven can only hold one ingredient.");
         }
         super.add(container);
     }
 
     @Override
-    public void run() {
+    public void run() throws IllegalStateException {
+        if (getLocation() == null) {
+            throw new IllegalStateException("Oven is not in a (valid) laboratory.");
+        }
         if (internalIngredients.isEmpty()) {
             throw new IllegalStateException("The storage of the Oven is empty.");
         }
 
         Ingredient ingredient = internalIngredients.getFirst();
 
-        if (this.temperature.lessThan(ingredient.getTemperature())) {
+        if (this.getTemperature().lessThan(ingredient.getTemperature())) {
             result = ingredient;
         } else {
-            int deviation = rand.nextInt(11) - 5; // gives [-5, 5]
-            int finalValue = Math.max(-10000, Math.min(10000, this.temperature.getValue() + deviation));
+            int deviation = rand.nextInt(11) - 5; // Random integer in interval [-5, 5]
             result = new Ingredient(
                     ingredient.getIngredientType(),
-                    new Temperature(finalValue),
+                    new Temperature(getTemperature().getValue()+deviation),
                     ingredient.getState(),
                     ingredient.getQuantity()
             );
         }
 
+        // Clear internal ingredients
         internalIngredients.clear();
     }
 }

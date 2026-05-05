@@ -200,6 +200,8 @@ public class IngredientContainer {
      * @return Whether this container is empty
      *
      * @throws IllegalStateException If container is terminated
+     *
+     * WIP this should also be true if there is an ingredient in there with quantity=0 !!!
      */
     public boolean isEmpty() throws IllegalStateException {
         if (isTerminated()) {

@@ -15,7 +15,10 @@ public class CoolingBox extends Device {
     // Constructor
     // =================================================================================
 
-    public CoolingBox() {}
+    public CoolingBox(Temperature temperature) {
+        this.setTemperature(temperature);
+    }
+
 
     // =================================================================================
     // Temperature
@@ -49,41 +52,39 @@ public class CoolingBox extends Device {
      *
      * @param container IngredientContainer to extract from
      *
-     * @throws IllegalStateException if ingredient container holds more than one item
+     * @throws IllegalStateException If ingredient container holds more than one item
      */
     @Override
     public void add(IngredientContainer container) throws IllegalStateException {
-        if (internalIngredients.size() >= 1) {
-            throw new IllegalStateException("Coolingox can only hold one ingredient.");
+        if (!internalIngredients.isEmpty()) {
+            throw new IllegalStateException("Cooling box can only hold one ingredient.");
         }
         super.add(container);
     }
 
-    /**
-     *
-     * @note throw exception if it holds more than one ingredient? Because add method already does this and is called
-     *       before the run method.
-     */
     @Override
-    public void run() {
+    public void run() throws IllegalStateException {
+        if (getLocation() == null) {
+            throw new IllegalStateException("Cooling box is not in a (valid) laboratory.");
+        }
         if (internalIngredients.isEmpty()) {
-            throw new IllegalStateException("The storage of the CoolingBox is empty.");
+            throw new IllegalStateException("The storage of the cooling box is empty.");
         }
 
         Ingredient ingredient = internalIngredients.getFirst();
 
-        if (ingredient.getTemperature().lessThan(this.temperature)) {
+        if (ingredient.getTemperature().lessThan(this.getTemperature())) {
             result = ingredient;
         } else {
             result = new Ingredient(
                     ingredient.getIngredientType(),
-                    this.temperature,
+                    this.getTemperature(),
                     ingredient.getState(),
                     ingredient.getQuantity()
             );
     }
 
-        // clear internal ingredients
+        // Clear internal ingredients
         internalIngredients.clear();
     }
 }
