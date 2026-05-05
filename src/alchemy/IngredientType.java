@@ -52,6 +52,15 @@ public class IngredientType {
      * @param standardState Given standard state
      * @param basicIngredients Given basic ingredient names
      *
+     * @effect Standard temperature is set to given standard temperature
+     *      | setStandardTemperature(standardTemperature)
+     *
+     * @effect Standard state is set to given standard state
+     *      | setStandardState(standardState)
+     *
+     * @effect Basic ingredients set is set to given set
+     *      | setBasicIngredients(basicIngredients)
+     *
      * @note This constructor is package-private: the user cannot use it, only other code can!
      */
     IngredientType(Temperature standardTemperature, State standardState, Set<String> basicIngredients) {
@@ -109,6 +118,9 @@ public class IngredientType {
      * @throws IllegalArgumentException If the given set of basic ingredients is not allowed
      *      | !canHaveAsBasicIngredients(basicIngredients)
      *
+     * @post Basic ingredients set is given set
+     *      | new.getBasicIngredients() == basicIngredients
+     *
      * @param basicIngredients Given set of basic ingredient names
      */
     public void setBasicIngredients(Set<String> basicIngredients) throws IllegalArgumentException {
@@ -123,15 +135,28 @@ public class IngredientType {
      * Sets the standard temperature of this ingredient type
      *
      * @param standardTemperature The given standard temperature
+     *
+     * @post Standard temperature is given value if valid; standard temperature is 20 otherwise
+     *      | if (canHaveAsStandardTemperature(standardTemperature)):
+     *      |   new.getStandardTemperature() == standardTemperature
+     *      | else:
+     *      |   new.getStandardTemperature() == new Temperature(20);
      */
     private void setStandardTemperature(Temperature standardTemperature) {
-        this.standardTemperature = standardTemperature;
+        if (canHaveAsStandardTemperature(standardTemperature)) {
+            this.standardTemperature = standardTemperature;
+        } else {
+            this.standardTemperature = new Temperature(20); // Escape route for total programming
+        }
     }
 
     /**
      * Sets the standard state of this ingredient type
      *
      * @param standardState The given standard state
+     *
+     * @post Standard state is given state
+     *      | new.getStandardState() == standardState
      */
     private void setStandardState(State standardState) {
         this.standardState = standardState;
@@ -165,19 +190,25 @@ public class IngredientType {
      *
      * @param basicIngredient Basic ingredient name to check
      *
-     * @return False if string is empty; false if string contains illegal characters; false if each word does not start with capital or non-letter; false if non-first letters of word are capital; false if one word of length < 3; false if multiple words with at least one word of length < 2; true otherwise
+     * @return False if string is empty; false if string contains "mixed" or "with"; false if string contains illegal characters; false if each word does not start with capital or non-letter; false if non-first letters of word are capital; false if one word of length < 3; false if multiple words with at least one word of length < 2; true otherwise
      *      | if (basicIngredient == ""): result == false
+     *      | if (basicIngredient.contains("mixed") || basicIngredient.contains("with")): result == false
      *      | if (!basicIngredient.matches("[\\p{L}'() ]*"): result == false
      *      | for word in basicIngredient.words():
      *      |  if (!(word[0].isCapital() || word[0].isNonLetter())): result == false
-     *      |  for i in 1..word.size():
-     *      |   if (word[i].isCapital()): result == false
-     *      |  if (basicIngredient.words().size() == 1 && word.size() < 3): result == false
-     *      |  else if (word.size() < 2): result == false
+     *      |   for i in 1..word.size():
+     *      |       if (word[i].isCapital()): result == false
+     *      |   if (basicIngredient.words().size() == 1 && word.size() < 3): result == false
+     *      |   else if (word.size() < 2): result == false
      */
     public static boolean canHaveAsBasicIngredient(String basicIngredient) {
         // No empty strings
         if (basicIngredient.isEmpty()) {
+            return false;
+        }
+
+        // Name of basic ingredient cannot contain "mixed" or "with", as this is reserved for mixed name generation
+        if (basicIngredient.toLowerCase().contains("mixed") || basicIngredient.toLowerCase().contains("with")) {
             return false;
         }
 

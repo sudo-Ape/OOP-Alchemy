@@ -14,18 +14,23 @@ public enum State {
     // Enum definitions
     // =================================================================================
 
-    /** State for liquids, orderred from drops to storerooms */
+    /** State for liquids, ordered from drops to storerooms */
     LIQUID(Arrays.asList(Unit.DROP,Unit.SPOON,Unit.VIAL,Unit.BOTTLE,Unit.JUG,Unit.BARREL,Unit.STOREROOM)),
 
-    /** State for powders, ordered fro pinches to storerooms */
+    /** State for powders, ordered from pinches to storerooms */
     POWDER(Arrays.asList(Unit.PINCH,Unit.SPOON,Unit.SACHET,Unit.BOX,Unit.SACK,Unit.CHEST,Unit.STOREROOM));
 
     // =================================================================================
     // Fields
     // =================================================================================
 
-    /** The list of units applicable to this state */
-    private List<Unit> allowedUnits;
+    /**
+     * The list of units applicable to this state
+     *
+     * @invar allowedUnits must be an effective list
+     *      | allowedUnits != null
+     */
+    private final List<Unit> allowedUnits;
 
     // =================================================================================
     // Constructor

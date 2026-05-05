@@ -27,8 +27,15 @@ public enum Unit {
     // =================================================================================
     // Fields
     // =================================================================================
-    private double spoons;
-    private String displayName;
+    /**
+     * Amount of spoons this unit is equal to
+     */
+    private final double spoons;
+
+    /**
+     * Display name string for this unit
+     */
+    private final String displayName;
 
     // =================================================================================
     // Constructor

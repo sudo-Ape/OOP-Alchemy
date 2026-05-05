@@ -9,6 +9,9 @@ public class Temperature {
     // =================================================================================
     // Fields
     // =================================================================================
+    /**
+     * Integer temperature value associated with this temperature
+     */
     private final int value;
 
     // =================================================================================
@@ -20,6 +23,9 @@ public class Temperature {
      *
      * @param value Given temperature value
      *
+     * @post Value is given value
+     *      | new.getValue() == value
+     *
      * @note This constructor is package-private: the user cannot create temperatures, as other classes will handle this!
      */
     Temperature(int value) {
@@ -28,6 +34,9 @@ public class Temperature {
 
     /**
      * Create a new temperature with given user-formatted value
+     *
+     * @post Value is parsed user input
+     *      | new.getValue() == fromUser(userTemperature)
      *
      * @param userTemperature Given user-formatted temperature value
      */
@@ -44,11 +53,10 @@ public class Temperature {
      *
      * @param userTemperature User-formatted input, e.g. "(50,0)" for -50
      *
-     * @throws IllegalArgumentException If both cool/heat are non-zero
-     *
-     * @return Integer temperature based on user-formatted input
+     * @return After splitting "(x,y)" into integers x and y: -x if y=0; y if x==0; 20 if anything else happens
+     *      | WIP
      */
-    private static int fromUser(String userTemperature) throws IllegalArgumentException {
+    private static int fromUser(String userTemperature) {
         // Strip parentheses/spaces and split by comma
         String clean = userTemperature.replaceAll("[()\\s]", "");
         String[] parts = clean.split(",");
@@ -57,7 +65,8 @@ public class Temperature {
         int right = Integer.parseInt(parts[1]);
 
         if (left != 0 && right != 0) {
-            throw new IllegalArgumentException("The given temperature is invalid.");
+            // Do not throw an error, but fall back to default case (total programming)
+            return 20;
         }
 
         return (left == 0) ? right : -left;
@@ -66,7 +75,8 @@ public class Temperature {
     /**
      * Return the user-formatted string for this temperature's value
      *
-     * @return User-formatted string for this temperature's value
+     * @return (0,temp) if temperature is positive; (-temp,0) if temperature is negative; (0,0) otherwise
+     *      | WIP
      */
     public String toUser() {
         if (getValue() < 0) {
@@ -77,7 +87,7 @@ public class Temperature {
     }
 
     // =================================================================================
-    // Getter
+    // Value
     // =================================================================================
 
     /**
@@ -97,7 +107,9 @@ public class Temperature {
      * Check whether this temperature equals a given other
      *
      * @param other Given other temperature
-     * @return Whether this temperature equals a given other
+     *
+     * @return Whether this temperature's integer value is equal to the other's integer value
+     *      | result == (getValue() == other.getValue())
      */
     public boolean equals(Temperature other) {
         return this.getValue() == other.getValue();
@@ -109,6 +121,7 @@ public class Temperature {
      * @param other Given other temperature
      *
      * @return Absolute difference in value between this and given other temperature
+     *      | result == abs(getValue() - other.getValue())
      */
     public int difference(Temperature other) {
         return Math.abs(getValue() - other.getValue());
@@ -118,7 +131,9 @@ public class Temperature {
      * Check whether this temperature value is less than given other temperature's value
      *
      * @param other Given other temperature
+     *
      * @return Whether this temperature value is less than given other temperature's value
+     *      | result == (getValue() < other.getValue())
      */
     public boolean lessThan(Temperature other) {
         return this.getValue() < other.getValue();
