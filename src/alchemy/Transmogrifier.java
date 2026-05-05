@@ -30,10 +30,8 @@ public class Transmogrifier extends Device {
         // Get number of spoons
         double spoons = ingredient.getQuantity().getSpoons();
 
-        // Toggle State
+        // Initialize new State and Quantity for transmogrified ingredient
         State newState = ingredient.getState() == State.LIQUID ? State.POWDER : State.LIQUID;
-
-        // Build a bridge Quantity
         Quantity newQuantity = new Quantity(newState, Map.of(Unit.SPOON,(int) spoons));
 
         // Update the ingredient
