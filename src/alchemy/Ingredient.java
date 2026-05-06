@@ -26,40 +26,33 @@ public class Ingredient {
     // =================================================================================
     /**
      * Ingredient type associated with this ingredient
-     *
-     * @invar ingredientType references an effective object
-     *      | ingredientType != null
      */
-    private IngredientType ingredientType;
+    private IngredientType ingredientType = null;
 
     /**
      * Temperature associated with this ingredient
-     *
-     * @invar temperature references an effective object
-     *      | temperature != null
      */
-    private Temperature temperature;
+    private Temperature temperature = null;
 
     /**
      * Variable referencing the state enum associated with this ingredient
      */
-    private State state;
+    private State state = null;
 
     /**
      * Quantity associated with this ingredient
-     *
-     * @invar quantity references an effective object
-     *      | quantity != null
      */
-    private Quantity quantity;
+    private Quantity quantity = null;
 
     /**
      * Special name string associated with this ingredient
-     *
-     * @invar specialName must be valid, akin to basic ingredient names in IngredientType
-     *      | canHaveAsSpecialName(specialName)
      */
-    private String specialName;
+    private String specialName = null;
+
+    /**
+     * Boolean to indicate whether this ingredient has been terminated, often when it has been used in an alchemic operation.
+     */
+    private boolean terminated = false;
 
     /**
      * Static default ingredient type as total programming fall-back in case of invalid user input
@@ -143,8 +136,15 @@ public class Ingredient {
      *      |   new.getIngredientType() == ingredientType
      *      | else:
      *      |   new.getIngredientType() == defaultIngredientType
+     *
+     * @throws IllegalStateException If ingredient has been terminated
+     *      | isTerminated()
      */
-    private void setIngredientType(IngredientType ingredientType) {
+    private void setIngredientType(IngredientType ingredientType) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This ingredient has been terminated.");
+        }
+
         if (canHaveAsIngredientType(ingredientType)) {
             this.ingredientType = ingredientType;
         } else {
@@ -163,9 +163,16 @@ public class Ingredient {
      *      | else:
      *      |   new.getTemperature() == new Temperature(20)
      *
+     * @throws IllegalStateException If ingredient has been terminated
+     *      | isTerminated()
+     *
      * @note This method is package-private: the user should not randomly change the state, but specific in-package uses will!
      */
-    void setTemperature(Temperature temperature) {
+    void setTemperature(Temperature temperature) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This ingredient has been terminated.");
+        }
+
         if (canHaveAsTemperature(temperature)) {
             this.temperature = temperature;
         } else {
@@ -181,9 +188,15 @@ public class Ingredient {
      * @post State is given state
      *      | new.getState() == state
      *
+     * @throws IllegalStateException If ingredient has been terminated
+     *      | isTerminated()
+     *
      * @note This method is package-private: the user should not randomly change the state, but specific in-package uses will!
      */
-    void setState(State state) {
+    void setState(State state) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This ingredient has been terminated.");
+        }
         this.state = state;
     }
 
@@ -197,8 +210,14 @@ public class Ingredient {
      *
      * @throws IllegalArgumentException If the given special name is invalid
      *      | !canHaveAsSpecialName(specialName)
+     *
+     * @throws IllegalStateException If ingredient has been terminated
+     *      | isTerminated()
      */
-    public void setSpecialName(String specialName) throws IllegalArgumentException {
+    public void setSpecialName(String specialName) throws IllegalArgumentException, IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This ingredient has been terminated.");
+        }
         if (canHaveAsSpecialName(specialName)) {
             this.specialName = specialName;
         } else {
@@ -217,9 +236,15 @@ public class Ingredient {
      * @post Quantity is given quantity
      *      | new.getQuantity() == quantity
      *
+     * @throws IllegalStateException If ingredient has been terminated
+     *      | isTerminated()
+     *
      * @note This method is package-private: the user should not randomly change an ingredient's quantity, only specific in-package use-cases will do this!
      */
-    void setQuantity(Quantity quantity) {
+    void setQuantity(Quantity quantity) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This ingredient has been terminated.");
+        }
         this.quantity = quantity;
     }
 
@@ -326,6 +351,29 @@ public class Ingredient {
     }
 
     // =================================================================================
+    // Termination
+    // =================================================================================
+
+    /**
+     * Check whether this ingredient has been terminated
+     *
+     * @return Whether this ingredient has been terminated
+     */
+    public boolean isTerminated() {
+        return terminated;
+    }
+
+    /**
+     * Terminate this ingredient
+     *
+     * @post Ingredient is terminated
+     *      | isTerminated()
+     */
+    public void terminate() {
+        terminated = true;
+    }
+
+    // =================================================================================
     // Other methods
     // =================================================================================
 
@@ -367,4 +415,6 @@ public class Ingredient {
                getTemperature().equals(other.getTemperature()) &&
                getIngredientType().equals(other.getIngredientType());
     }
+
+
 }

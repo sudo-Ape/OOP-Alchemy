@@ -19,9 +19,6 @@ public class IngredientType {
     // =================================================================================
     /**
      * Variable referencing the standard temperature of this ingredient type
-     *
-     * @invar standardTemperature references an effective object
-     *      | standardTemperature != null
      */
     private Temperature standardTemperature;
 

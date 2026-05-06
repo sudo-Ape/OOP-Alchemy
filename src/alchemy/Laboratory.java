@@ -6,6 +6,9 @@ import java.util.List;
 /**
  * Laboratory class for the storing of ingredients and machines
  *
+ * @invar Capacity must always be valid
+ *      | canHaveAsCapacity(getCapacity())
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class Laboratory {
@@ -14,9 +17,6 @@ public class Laboratory {
     // =================================================================================
     /**
      * Integer amount of storerooms this laboratory can hold in storage
-     *
-     * @invar capacity must be strictly positive
-     *      | capacity > 0
      */
     private int capacity; // Number of Storerooms in capacity
 
@@ -93,9 +93,28 @@ public class Laboratory {
      *
      * @post Capacity is given capacity
      *      | new.getCapacity() == capacity
+     *
+     * @throws IllegalArgumentException If given capacity is not valid
+     *      | !canHaveAsCapacity(capacity)
      */
-    private void setCapacity(int capacity) {
-        this.capacity = capacity;
+    private void setCapacity(int capacity) throws IllegalArgumentException {
+        if (canHaveAsCapacity(capacity)) {
+            this.capacity = capacity;
+        } else {
+            throw new IllegalArgumentException("Given capacity is not valid.");
+        }
+    }
+
+    /**
+     * Check whether given capacity is valid
+     *
+     * @param capacity Given capacity
+     *
+     * @return True if given capacity is strictly positive; false otherwise
+     *      | result == (capacity > 0)
+     */
+    public static boolean canHaveAsCapacity(int capacity) {
+        return capacity > 0;
     }
 
     // =================================================================================
@@ -143,6 +162,7 @@ public class Laboratory {
                 ingredient.setQuantity(ingredient.getQuantity().minus(quantity));
                 if (ingredient.getQuantity().isZero()) { // Optional: if all ingredient taken out, get rid of it
                     storage.remove(ingredient);
+                    ingredient.terminate();
                 }
                 return outputContainer;
             }
@@ -229,8 +249,16 @@ public class Laboratory {
      *
      * @throws IllegalArgumentException If addition of newIngredient causes storage to exceed its capacity
      *      | WIP
+     *
+     * @throws IllegalArgumentException If given ingredient is null or terminated
+     *      | newIngredient == null || newIngredient.isTerminated()
      */
-    public void addIngredient(Ingredient newIngredient) {
+    public void addIngredient(Ingredient newIngredient) throws IllegalStateException, IllegalArgumentException {
+        // Check if valid ingredient
+        if (newIngredient == null || newIngredient.isTerminated()) {
+            throw new IllegalArgumentException("Given ingredient is not effective or terminated.");
+        }
+
         // Bring this ingredient to its standard temperature and standard state
         // Make sure to make pseudo-use of the laboratory's devices (check for their proper existence, but don't actually run them to prevent conflicts)
 
@@ -278,6 +306,10 @@ public class Laboratory {
                     storage.add(ingredient);
                     throw new IllegalArgumentException("Addition of given ingredient makes storage exceed its capacity.");
                 }
+
+                // Terminate used ingredients
+                ingredient.terminate();
+                newIngredient.terminate();
             } else {
                 // None of this in storage yet...
                 storage.add(newIngredient);
@@ -343,8 +375,15 @@ public class Laboratory {
      *
      * @post If given cooling box was connected somewhere, it is disconnected
      *      | coolingBox.getLocation().getCoolingBox() == null
+     *
+     * @throws IllegalArgumentException If given cooling box has been terminated
+     *      | coolingBox.isTerminated()
      */
-    public void setCoolingBox(CoolingBox coolingBox) {
+    public void setCoolingBox(CoolingBox coolingBox) throws IllegalArgumentException {
+        if (coolingBox.isTerminated()) {
+            throw new IllegalArgumentException("Given cooling box has been terminated.");
+        }
+
         // Disconnect existing device, if one exists
         if (getCoolingBox() != null) {
             getCoolingBox().setLocation(null);
@@ -359,6 +398,7 @@ public class Laboratory {
         if (coolingBox != null) {
             coolingBox.setLocation(this);
         }
+
         this.coolingBox = coolingBox;
     }
 
@@ -387,8 +427,15 @@ public class Laboratory {
      *
      * @post If given oven was connected somewhere, it is disconnected
      *      | oven.getLocation().getOven() == null
+     *
+     * @throws IllegalArgumentException If given oven has been terminated
+     *      | oven.isTerminated()
      */
-    public void setOven(Oven oven) {
+    public void setOven(Oven oven) throws IllegalArgumentException {
+        if (oven.isTerminated()) {
+            throw new IllegalArgumentException("Given oven has been terminated.");
+        }
+
         // Disconnect existing device, if one exists
         if (getOven() != null) {
             getOven().setLocation(null);
@@ -431,8 +478,15 @@ public class Laboratory {
      *
      * @post If given kettle was connected somewhere, it is disconnected
      *      | kettle.getLocation().getKettle() == null
+     *
+     * @throws IllegalArgumentException If given kettle has been terminated
+     *      | kettle.isTerminated()
      */
-    public void setKettle(Kettle kettle) {
+    public void setKettle(Kettle kettle) throws IllegalArgumentException {
+        if (kettle.isTerminated()) {
+            throw new IllegalArgumentException("Given kettle has been terminated.");
+        }
+
         // Disconnect existing device, if one exists
         if (getKettle() != null) {
             getKettle().setLocation(null);
@@ -475,8 +529,15 @@ public class Laboratory {
      *
      * @post If given transmogrifier was connected somewhere, it is disconnected
      *      | transmogrifier.getLocation().getTransmogrifier() == null
+     *
+     * @throws IllegalArgumentException If given transmogrifier has been terminated
+     *      | transmogrifier.isTerminated()
      */
-    public void setTransmogrifier(Transmogrifier transmogrifier) {
+    public void setTransmogrifier(Transmogrifier transmogrifier) throws IllegalArgumentException {
+        if (transmogrifier.isTerminated()) {
+            throw new IllegalArgumentException("Given transmogrifier has been terminated");
+        }
+
         // Disconnect existing device, if one exists
         if (getTransmogrifier() != null) {
             getTransmogrifier().setLocation(null);

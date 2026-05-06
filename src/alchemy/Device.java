@@ -155,7 +155,7 @@ public abstract class Device {
 
         // Empty the container
         container.empty();
-        // WIP need to terminate the container still, after terminate() is made, also is emptying even necessary then? (if not remove post too)
+        container.terminate();
     }
 
 
@@ -203,12 +203,31 @@ public abstract class Device {
     /**
      * Run the device on the set ingredient contents
      *
-     * @post Result is set to device's function result
-     *
      * @post Internal ingredients list is emptied
-     *      | WIP
+     *      | new.internalIngredients.isEmpty()
+     *
+     * @throws IllegalStateException If device is not in a laboratory
+     *      | getLocation() == null
+     *
+     * @throws IllegalStateException If storage of this device is empty
+     *      | internalIngredients.isEmpty()
+     *
+     * @throws IllegalStateException If device has been terminated
+     *      | isTerminated()
+     *
+     * @note Meant to be overwritten by implementing subclasses, where they call this first (via super) and then do their own checks and running!
      */
-    public abstract void run();
+    public void run() throws IllegalStateException {
+        if (getLocation() == null) {
+            throw new IllegalStateException("Device is not in a (valid) laboratory.");
+        }
+        if (internalIngredients.isEmpty()) {
+            throw new IllegalStateException("The storage of this device is empty.");
+        }
+        if (isTerminated()) {
+            throw new IllegalStateException("This device has been terminated.");
+        }
+    }
 
     /**
      * Check whether given list of internal ingredients is valid
@@ -233,5 +252,22 @@ public abstract class Device {
         }
 
         return true;
+    }
+
+    /**
+     * Clears internal ingredients list and terminates all contents, meant to be used after device run
+     *
+     * @post Internal ingredients list is emptied
+     *      | new.internalIngredients.isEmpty()
+     *
+     * @post Every ingredient in internal ingredients list is terminated
+     *      | for ingredient in internalIngredients:
+     *      |   ingredient.isTerminated()
+     */
+    protected void clearInternalIngredients() {
+        for (Ingredient ingredient : internalIngredients) {
+            ingredient.terminate();
+        }
+        internalIngredients.clear();
     }
 }

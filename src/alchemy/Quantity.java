@@ -254,7 +254,6 @@ public class Quantity {
      *
      * @post Unit's map layout (x spoons, y sacks, z barrels, ...) is as optimal as possible, meaning no unit amounts overflow into the next unit's worth
      *      | WIP (ik denk dat het niet van ons verwacht wordt dat we dit soort dingen formeel kunnen lol)
-     *      | FUCK DIT BLOEDJE HOE WILLEN ZE DAT WE DIT KUNNEN
      */
     public void simplifyUnit() {
         double totalSpoons = getSpoons();

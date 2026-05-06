@@ -68,19 +68,22 @@ public class Transmogrifier extends Device {
 
     @Override
     public void run() throws IllegalStateException {
-        if (getLocation() == null) {
-            throw new IllegalStateException("Transmogrifier is not in a (valid) laboratory.");
-        }
-        if (internalIngredients.isEmpty()) {
-            throw new IllegalStateException("The storage of the transmogrifier is empty.");
-        }
-        if (isTerminated()) {
-            throw new IllegalStateException("This transmogrifier has been terminated.");
-        }
+        super.run(); // Do repetitive checks here!
 
         Ingredient ingredient = internalIngredients.getFirst();
 
         result = new Ingredient(ingredient.getIngredientType(),ingredient.getTemperature(),getGoalState(),ingredient.getQuantity().toState(getGoalState()));
+
+        // Clear internal ingredients
+        clearInternalIngredients();
+    }
+
+    @Override
+    public void terminate() {
+        if (getLocation() != null) {
+            getLocation().setTransmogrifier(null);
+        }
+        super.terminate();
     }
 }
 

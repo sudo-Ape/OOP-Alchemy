@@ -33,14 +33,8 @@ public class Kettle extends Device {
     /**
      * Run the kettle on its internal ingredients
      *
-     * @throws IllegalStateException If there are no internal ingredients stored
-     *      | internalIngredients.isEmpty()
-     *
-     * @throws IllegalStateException If the kettle is not inside a laboratory
-     *      | getLocation() == null
-     *
-     * @throws IllegalStateException If kettle has been terminated
-     *      | isTerminated()
+     * @effect Does primary validity checks via abstract Device class
+     *      | super.run()
      *
      * @post Device result is set to mixing result
      *      | result == Kettle.mix(internalIngredients)
@@ -50,22 +44,12 @@ public class Kettle extends Device {
      */
     @Override
     public void run() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This kettle has been terminated.");
-        }
-
-        if (internalIngredients.isEmpty()) {
-            throw new IllegalStateException("The storage of the kettle is empty.");
-        }
-
-        if (getLocation() == null) {
-            throw new IllegalStateException("Kettle is not in a (valid) laboratory.");
-        }
+        super.run(); // Do repetitive checks here!
 
         result = mix(internalIngredients);
 
         // Clear internal ingredients
-        internalIngredients.clear();
+        clearInternalIngredients();
     }
 
     /**
@@ -138,5 +122,27 @@ public class Kettle extends Device {
 
         IngredientType resultType = new IngredientType(resultStdTemp, resultState, totalBasicIngredients);
         return new Ingredient(resultType, new Temperature(resultTempValue), resultState, resultQuantity);
+    }
+
+    /**
+     * Terminate this kettle
+     *
+     * @post Kettle is untied from any laboratory it may have been in
+     *      | if (old) getLocation() != null:
+     *      |   getLocation() == null
+     *
+     * @post Any laboratory this kettle was tied to is updated
+     *      | if (old) getLocation != null:
+     *      |   getLocation().getCoolingBox() == null
+     *
+     * @effect Abstract superclass termination effects are performed
+     *      | super.terminate()
+     */
+    @Override
+    public void terminate() {
+        if (getLocation() != null) {
+            getLocation().setKettle(null);
+        }
+        super.terminate();
     }
 }

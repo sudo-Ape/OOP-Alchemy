@@ -19,7 +19,6 @@ public class CoolingBox extends Device {
         this.setTemperature(temperature);
     }
 
-
     // =================================================================================
     // Temperature
     // =================================================================================
@@ -76,15 +75,7 @@ public class CoolingBox extends Device {
 
     @Override
     public void run() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This cooling box has been terminated.");
-        }
-        if (getLocation() == null) {
-            throw new IllegalStateException("Cooling box is not in a (valid) laboratory.");
-        }
-        if (internalIngredients.isEmpty()) {
-            throw new IllegalStateException("The storage of the cooling box is empty.");
-        }
+        super.run(); // Do repetitive checks here!
 
         Ingredient ingredient = internalIngredients.getFirst();
 
@@ -97,9 +88,17 @@ public class CoolingBox extends Device {
                     ingredient.getState(),
                     ingredient.getQuantity()
             );
-    }
+        }
 
         // Clear internal ingredients
-        internalIngredients.clear();
+        clearInternalIngredients();
+    }
+
+    @Override
+    public void terminate() {
+        if (getLocation() != null) {
+            getLocation().setCoolingBox(null);
+        }
+        super.terminate();
     }
 }

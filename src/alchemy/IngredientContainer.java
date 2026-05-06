@@ -7,6 +7,8 @@ import java.util.List;
 /**
  * Ingredient container class to hold ingredients
  *
+ * WIP Loïck: wat gebeurt er als de stoute gebruiker de contents van de container terminate?
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class IngredientContainer {
@@ -191,6 +193,8 @@ public class IngredientContainer {
             throw new IllegalStateException("This container has been terminated.");
         }
 
+        // Terminate contents and empty
+        getContents().terminate();
         setContents(null);
     }
 
@@ -218,6 +222,11 @@ public class IngredientContainer {
      */
     public boolean isTerminated() {
         return terminated;
+    }
+
+    public void terminate() {
+        terminated = true;
+        // Other stuff to fix like associations?
     }
 }
 
