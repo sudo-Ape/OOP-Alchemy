@@ -28,8 +28,14 @@ public class CoolingBox extends Device {
      * Returns the temperature of the cooling box
      *
      * @return Temperature of the cooling box
+     *
+     * @throws IllegalStateException If cooling box has been terminated
+     *      | isTerminated()
      */
-    public Temperature getTemperature() {
+    public Temperature getTemperature() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This cooling box has been terminated.");
+        }
         return temperature;
     }
 
@@ -38,8 +44,14 @@ public class CoolingBox extends Device {
      * Set the temperature of the cooling box
      *
      * @param temperature Given temperature to which the CoolingBox's temperature will be set
+     *
+     * @throws IllegalStateException If cooling box has been terminated
+     *      | isTerminated()
      */
-    public void setTemperature(Temperature temperature) {
+    public void setTemperature(Temperature temperature) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This cooling box has been terminated.");
+        }
         this.temperature = temperature;
     }
 
@@ -64,6 +76,9 @@ public class CoolingBox extends Device {
 
     @Override
     public void run() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This cooling box has been terminated.");
+        }
         if (getLocation() == null) {
             throw new IllegalStateException("Cooling box is not in a (valid) laboratory.");
         }

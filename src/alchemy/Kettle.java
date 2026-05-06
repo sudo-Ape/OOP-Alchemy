@@ -39,6 +39,9 @@ public class Kettle extends Device {
      * @throws IllegalStateException If the kettle is not inside a laboratory
      *      | getLocation() == null
      *
+     * @throws IllegalStateException If kettle has been terminated
+     *      | isTerminated()
+     *
      * @post Device result is set to mixing result
      *      | result == Kettle.mix(internalIngredients)
      *
@@ -47,6 +50,10 @@ public class Kettle extends Device {
      */
     @Override
     public void run() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This kettle has been terminated.");
+        }
+
         if (internalIngredients.isEmpty()) {
             throw new IllegalStateException("The storage of the kettle is empty.");
         }

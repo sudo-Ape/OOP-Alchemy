@@ -28,9 +28,15 @@ public class Oven extends Device {
     /**
      * Returns the temperature of the Oven
      *
-     * @return temperature of the Oven
+     * @return Temperature of the Oven
+     *
+     * @throws IllegalStateException If oven has been terminated
+     *      | isTerminated()
      */
-    public Temperature getTemperature() {
+    public Temperature getTemperature() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This oven has been terminated.");
+        }
         return temperature;
     }
 
@@ -38,8 +44,14 @@ public class Oven extends Device {
      * Set the temperature of the Oven
      *
      * @param temperature Given temperature to which the Oven's temperature will be set
+     *
+     * @throws IllegalStateException If oven has been terminated
+     *      | isTerminated()
      */
-    public void setTemperature(Temperature temperature) {
+    public void setTemperature(Temperature temperature) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This oven has been terminated.");
+        }
         this.temperature = temperature;
     }
 
@@ -62,6 +74,9 @@ public class Oven extends Device {
         }
         if (internalIngredients.isEmpty()) {
             throw new IllegalStateException("The storage of the Oven is empty.");
+        }
+        if (isTerminated()) {
+            throw new IllegalStateException("This oven has been terminated.");
         }
 
         Ingredient ingredient = internalIngredients.getFirst();

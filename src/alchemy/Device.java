@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * Abstract Device class for machines in a laboratory
  *
- * @invar List of internal ingredient must always be valid
- *      | canHaveAsInternalIngredients(internalIngredients)
+ * @invar List of internal ingredient must always be valid, or device is terminated
+ *      | canHaveAsInternalIngredients(internalIngredients) || isTerminated()
  *
  * @author Casper Vermeeren; Loïck Sansen
  */
@@ -59,8 +59,14 @@ public abstract class Device {
      * Get the location of this device
      *
      * @return Current location of this device
+     *
+     * @throws IllegalStateException If device has been terminated
+     *      | isTerminated()
      */
-    public Laboratory getLocation() {
+    public Laboratory getLocation() throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This device has been terminated.");
+        }
         return location;
     }
 
@@ -72,12 +78,40 @@ public abstract class Device {
      * @post Location is given location
      *      | new.getLocation() == location
      *
+     * @throws IllegalStateException If device has been terminated
+     *      | isTerminated()
+     *
      * @note This method is package-private: only laboratories can call this method when you add a device to them (bidirectional association).
      */
-    void setLocation(Laboratory location) {
+    void setLocation(Laboratory location) throws IllegalStateException {
+        if (isTerminated()) {
+            throw new IllegalStateException("This device has been terminated.");
+        }
         this.location = location;
     }
 
+    // =================================================================================
+    // Termination (destructors)
+    // =================================================================================
+
+    /**
+     * Terminate this device
+     *
+     * @post Device is terminated
+     *      | isTerminated()
+     */
+    public void terminate() {
+        terminated = true;
+    }
+
+    /**
+     * Check whether this device has been terminated
+     *
+     * @return Whether this device has been terminated
+     */
+    public boolean isTerminated() {
+        return terminated;
+    }
 
     // =================================================================================
     // Methods
@@ -175,15 +209,6 @@ public abstract class Device {
      *      | WIP
      */
     public abstract void run();
-
-    /**
-     * Check whether this device has been terminated
-     *
-     * @return Whether this device has been terminated
-     */
-    public boolean isTerminated() {
-        return terminated;
-    }
 
     /**
      * Check whether given list of internal ingredients is valid
