@@ -17,8 +17,8 @@ public class Oven extends Device {
     // Constructor
     // =================================================================================
 
-    public Oven(Temperature temperature) {
-        this.setTemperature(temperature);
+    public Oven(String temperature) {
+        this.setTemperature(new Temperature(temperature));
     }
 
     // =================================================================================

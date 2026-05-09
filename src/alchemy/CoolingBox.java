@@ -15,8 +15,8 @@ public class CoolingBox extends Device {
     // Constructor
     // =================================================================================
 
-    public CoolingBox(Temperature temperature) {
-        this.setTemperature(temperature);
+    public CoolingBox(String temperature) {
+        this.setTemperature(new Temperature(temperature));
     }
 
     // =================================================================================

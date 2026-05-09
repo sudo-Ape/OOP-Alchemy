@@ -47,7 +47,7 @@ public class Ingredient {
     /**
      * Special name string associated with this ingredient
      */
-    private String specialName = null;
+    private String specialName = "";
 
     /**
      * Boolean to indicate whether this ingredient has been terminated, often when it has been used in an alchemic operation.
@@ -89,10 +89,10 @@ public class Ingredient {
         IngredientType newIngredientType = new IngredientType(new Temperature(standardTemperature),standardState, Set.of(basicIngredient));
 
         // Set stuff
-        setQuantity(quantity);
         setIngredientType(newIngredientType);
         setTemperature(new Temperature(temperature));
         setState(state);
+        setQuantity(quantity);
     }
 
     /**
@@ -343,11 +343,11 @@ public class Ingredient {
      *
      * @param quantity Given quantity
      *
-     * @return True if given quantity is not null; false otherwise
-     *      | result == (quantity != null)
+     * @return True if given quantity is not null and quantity's state matches this ingredient's state; false otherwise
+     *      | result == (quantity != null && quantity.getState() == this.getState())
      */
-    public static boolean canHaveAsQuantity(Quantity quantity) {
-        return quantity != null;
+    public boolean canHaveAsQuantity(Quantity quantity) {
+        return quantity != null && quantity.getState() == getState();
     }
 
     // =================================================================================
@@ -396,7 +396,7 @@ public class Ingredient {
         }
 
         // Check for special name
-        if (getSpecialName() != null) {
+        if (!getSpecialName().isEmpty()) {
             return getSpecialName()+" ("+genericFullName+")";
         }
         return genericFullName;

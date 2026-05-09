@@ -329,7 +329,8 @@ public class Quantity {
      *      | result == (getSpoons() <= unit.getSpoons())
      */
     public boolean lessThan(Unit unit) {
-        return getSpoons() <= unit.getSpoons();
+        double epsilon = 0.000001; // Fix floating-point precision errors
+        return getSpoons() < unit.getSpoons() + epsilon;
     }
 
     /**
@@ -341,7 +342,8 @@ public class Quantity {
      *      | result == (getSpoons() <= other.getSpoons())
      */
     public boolean lessThan(Quantity other) {
-        return getSpoons() <= other.getSpoons();
+        double epsilon = 0.000001; // Fix floating-point precision errors
+        return getSpoons() < other.getSpoons() + epsilon;
     }
 
     /**

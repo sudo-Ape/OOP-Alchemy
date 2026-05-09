@@ -2,6 +2,7 @@ package alchemy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Laboratory class for the storing of ingredients and machines
@@ -152,7 +153,7 @@ public class Laboratory {
                 }
 
                 // Check if there is enough available in storage
-                if (ingredient.getQuantity().lessThan(quantity)) {
+                if (!quantity.lessThan(ingredient.getQuantity())) {
                     throw new IllegalArgumentException("Requested quantity exceeds available amount of ingredient in storage.");
                 }
 
@@ -310,16 +311,18 @@ public class Laboratory {
                 // Terminate used ingredients
                 ingredient.terminate();
                 newIngredient.terminate();
-            } else {
-                // None of this in storage yet...
-                storage.add(newIngredient);
+            }
+        }
 
-                // Check if capacity has been exceeded
-                if (getStoredTotal() > getCapacity() * Unit.STOREROOM.getSpoons()) {
-                    // Revert changes
-                    storage.remove(newIngredient);
-                    throw new IllegalArgumentException("Addition of given ingredient makes storage exceed its capacity.");
-                }
+        if (!newIngredient.isTerminated()) {
+            // None of this in storage yet...
+            storage.add(newIngredient);
+
+            // Check if capacity has been exceeded
+            if (getStoredTotal() > getCapacity() * Unit.STOREROOM.getSpoons()) {
+                // Revert changes
+                storage.remove(newIngredient);
+                throw new IllegalArgumentException("Addition of given ingredient makes storage exceed its capacity.");
             }
         }
     }
@@ -336,7 +339,7 @@ public class Laboratory {
     public String getStorage() {
         String output = "Storage contents:\n\n";
         for (Ingredient ingredient : storage) {
-            if (ingredient.getSpecialName() == null) { // No special name
+            if (ingredient.getSpecialName().isEmpty()) { // No special name
                 output = output.concat(ingredient.getIngredientType().getSimpleName()+": "+ingredient.getQuantity().getDisplay());
             } else { // Has a special name
                 output = output.concat(ingredient.getIngredientType().getSimpleName()+" ("+ingredient.getSpecialName()+"): "+ingredient.getQuantity().getDisplay());
@@ -344,6 +347,61 @@ public class Laboratory {
             output = output.concat("\n");
         }
         return output;
+    }
+
+    /**
+     * Clear this laboratory's storage
+     *
+     * @post All ingredients in storage are terminated
+     *      | for ingredient in (old) storage:
+     *      |   ingredient.isTerminated()
+     *
+     * @post Storage is empty
+     *      | new.storage.isEmpty()
+     */
+    public void clear() {
+        for (Ingredient ingredient : storage) {
+            ingredient.terminate();
+        }
+        storage.clear();
+    }
+
+    /**
+     * Check whether the laboratory's storage contains an ingredient equal to the given ingredient in all facets but quantity
+     *
+     * @param ingredient Given ingredient
+     *
+     * @return True if storage list contains an ingredient equal to the given ingredient; false otherwise
+     *      | for i in storage:
+     *      |   if i.equals(ingredient):
+     *      |       result == true
+     *      | result == false
+     */
+    public boolean contains(Ingredient ingredient) {
+        for (Ingredient i : storage) {
+            if (i.equals(ingredient)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get the quantity amount of this precise ingredient stored in the laboratory
+     *
+     * @param ingredient Given ingredient
+     *
+     * @return Quantity of this ingredient present in storage
+     *      | ingredient.setQuantity(result)
+     *      | storage.contains(ingredient)
+     */
+    public Quantity getAmountOf(Ingredient ingredient) {
+        for (Ingredient i : storage) {
+            if (i.equals(ingredient)) {
+                return i.getQuantity();
+            }
+        }
+        return new Quantity(ingredient.getState(), Map.of(Unit.SPOON,0));
     }
 
     // =================================================================================
@@ -380,7 +438,7 @@ public class Laboratory {
      *      | coolingBox.isTerminated()
      */
     public void setCoolingBox(CoolingBox coolingBox) throws IllegalArgumentException {
-        if (coolingBox.isTerminated()) {
+        if (coolingBox != null && coolingBox.isTerminated()) {
             throw new IllegalArgumentException("Given cooling box has been terminated.");
         }
 
@@ -432,7 +490,7 @@ public class Laboratory {
      *      | oven.isTerminated()
      */
     public void setOven(Oven oven) throws IllegalArgumentException {
-        if (oven.isTerminated()) {
+        if (coolingBox != null && oven.isTerminated()) {
             throw new IllegalArgumentException("Given oven has been terminated.");
         }
 
@@ -483,7 +541,7 @@ public class Laboratory {
      *      | kettle.isTerminated()
      */
     public void setKettle(Kettle kettle) throws IllegalArgumentException {
-        if (kettle.isTerminated()) {
+        if (coolingBox != null && kettle.isTerminated()) {
             throw new IllegalArgumentException("Given kettle has been terminated.");
         }
 
@@ -534,7 +592,7 @@ public class Laboratory {
      *      | transmogrifier.isTerminated()
      */
     public void setTransmogrifier(Transmogrifier transmogrifier) throws IllegalArgumentException {
-        if (transmogrifier.isTerminated()) {
+        if (coolingBox != null && transmogrifier.isTerminated()) {
             throw new IllegalArgumentException("Given transmogrifier has been terminated");
         }
 
