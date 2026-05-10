@@ -16,7 +16,7 @@ public class CoolingBox extends Device {
     // =================================================================================
 
     public CoolingBox(String temperature) {
-        this.setTemperature(new Temperature(temperature));
+        this.setTemperature(temperature);
     }
 
     // =================================================================================
@@ -47,11 +47,11 @@ public class CoolingBox extends Device {
      * @throws IllegalStateException If cooling box has been terminated
      *      | isTerminated()
      */
-    public void setTemperature(Temperature temperature) throws IllegalStateException {
+    public void setTemperature(String temperature) throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This cooling box has been terminated.");
         }
-        this.temperature = temperature;
+        this.temperature = new Temperature(temperature);
     }
 
     // =================================================================================

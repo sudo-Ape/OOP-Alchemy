@@ -18,7 +18,7 @@ public class Oven extends Device {
     // =================================================================================
 
     public Oven(String temperature) {
-        this.setTemperature(new Temperature(temperature));
+        this.setTemperature(temperature);
     }
 
     // =================================================================================
@@ -48,11 +48,11 @@ public class Oven extends Device {
      * @throws IllegalStateException If oven has been terminated
      *      | isTerminated()
      */
-    public void setTemperature(Temperature temperature) throws IllegalStateException {
+    public void setTemperature(String temperature) throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This oven has been terminated.");
         }
-        this.temperature = temperature;
+        this.temperature = new Temperature(temperature);
     }
 
     // =================================================================================

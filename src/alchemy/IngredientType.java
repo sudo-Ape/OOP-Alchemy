@@ -292,15 +292,15 @@ public class IngredientType {
 
             // Check if "mixed with" is necessary
             if (i == 0 && N > 1) {
-                output.join(" mixed with ");
+                output += " mixed with ";
             }
 
             // Check if "and" or "," is necessary
             if (i > 0 && i < N-1) {
                 if (i == N-2) {
-                    output.join(" and ");
+                    output += " and ";
                 } else {
-                    output.join(", ");
+                    output += ", ";
                 }
             }
         }

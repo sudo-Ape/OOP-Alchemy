@@ -490,7 +490,7 @@ public class Laboratory {
      *      | oven.isTerminated()
      */
     public void setOven(Oven oven) throws IllegalArgumentException {
-        if (coolingBox != null && oven.isTerminated()) {
+        if (oven != null && oven.isTerminated()) {
             throw new IllegalArgumentException("Given oven has been terminated.");
         }
 
@@ -541,7 +541,7 @@ public class Laboratory {
      *      | kettle.isTerminated()
      */
     public void setKettle(Kettle kettle) throws IllegalArgumentException {
-        if (coolingBox != null && kettle.isTerminated()) {
+        if (kettle != null && kettle.isTerminated()) {
             throw new IllegalArgumentException("Given kettle has been terminated.");
         }
 
@@ -592,7 +592,7 @@ public class Laboratory {
      *      | transmogrifier.isTerminated()
      */
     public void setTransmogrifier(Transmogrifier transmogrifier) throws IllegalArgumentException {
-        if (coolingBox != null && transmogrifier.isTerminated()) {
+        if (transmogrifier != null && transmogrifier.isTerminated()) {
             throw new IllegalArgumentException("Given transmogrifier has been terminated");
         }
 

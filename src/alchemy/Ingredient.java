@@ -102,6 +102,18 @@ public class Ingredient {
      * @param temperature Given temperature (equal standard temperature)
      * @param state Given state (equal standard state)
      * @param quantity Given quantity
+     *
+     * @effect Ingredient type is set to a new ingredient type with state, temperature, and a set containing only basicIngredient as basicIngredients
+     *      | WIP
+     *
+     * @effect Quantity is set to given quantity
+     *      | setQuantity(quantity)
+     *
+     * @effect Temperature is set to new object based on given temperature input
+     *      | setTemperature(new Temperature(temperature))
+     *
+     * @effect State is set to given state
+     *      | setState(state)
      */
     public Ingredient(String basicIngredient, String temperature, State state, Quantity quantity) {
         this(basicIngredient,temperature,state,quantity,state,temperature);
@@ -114,6 +126,18 @@ public class Ingredient {
      * @param temperature Given temperature
      * @param state Given state
      * @param quantity Given quantity
+     *
+     * @effect Ingredient type is set to given ingredient type
+     *      | setIngredientType(ingredientType)
+     *
+     * @effect Quantity is set to given quantity
+     *      | setQuantity(quantity)
+     *
+     * @effect Temperature is set to new object based on given temperature input
+     *      | setTemperature(new Temperature(temperature))
+     *
+     * @effect State is set to given state
+     *      | setState(state)
      */
     Ingredient(IngredientType ingredientType, Temperature temperature, State state, Quantity quantity) {
         this.ingredientType = ingredientType;
