@@ -5,8 +5,8 @@ package alchemy;
  * A transmogrifier can hold at most one ingredient at a time and changes the state to the given goal state.
  * The quantity is converted to the new state, with any remainder smaller than a drop or pinch lost in the process.
  *
- * @invar The goal state of this transmogrifier must always be non-null, or this transmogrifier is terminated
- *      | goalState != null || isTerminated()
+ * @invar The goal state of this transmogrifier must always be non-null
+ *      | getGoalState() != null
  *
  * @invar The transmogrifier holds at most one ingredient at a time
  *      | internalIngredients.size() <= 1
@@ -68,10 +68,16 @@ public class Transmogrifier extends Device {
      *
      * @throws IllegalStateException If transmogrifier has been terminated
      *      | isTerminated()
+     *
+     * @throws IllegalArgumentException If goal state is null
+     *      | goalState == null
      */
-    public void setGoalState(State goalState) throws IllegalStateException {
+    public void setGoalState(State goalState) throws IllegalStateException, IllegalArgumentException {
         if (isTerminated()) {
             throw new IllegalStateException("This transmogrifier has been terminated.");
+        }
+        if (goalState == null) {
+            throw new IllegalArgumentException("Goal state cannot be null.");
         }
         this.goalState = goalState;
     }

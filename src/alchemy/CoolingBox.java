@@ -6,8 +6,8 @@ package alchemy;
  * If the cooling box's temperature is higher than the ingredient's current temperature, the ingredient is left unchanged.
  * Otherwise, the result temperature is the cooling box's temperature.
  *
- * @invar The temperature of this cooling box must always be non-null, or this cooling box is terminated
- *       | temperature != null || isTerminated()
+ * @invar The temperature of this cooling box must always be non-null
+ *       | getTemperature() != null
  *
  * @invar The cooling box holds at most one ingredient at a time
  *       | internalIngredients.size() <= 1
@@ -72,10 +72,16 @@ public class CoolingBox extends Device {
      *
      * @throws IllegalStateException If cooling box has been terminated
      *      | isTerminated()
+     *
+     * @throws IllegalArgumentException If temperature is null
+     *      | temperature == null
      */
-    public void setTemperature(Temperature temperature) throws IllegalStateException {
+    public void setTemperature(Temperature temperature) throws IllegalStateException, IllegalArgumentException {
         if (isTerminated()) {
             throw new IllegalStateException("This cooling box has been terminated.");
+        }
+        if (temperature == null) {
+            throw new IllegalArgumentException("Temperature cannot be null.");
         }
         this.temperature = temperature;
     }
