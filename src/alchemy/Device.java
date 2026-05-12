@@ -1,5 +1,8 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +66,7 @@ public abstract class Device {
      * @throws IllegalStateException If device has been terminated
      *      | isTerminated()
      */
+    @Basic
     public Laboratory getLocation() throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This device has been terminated.");
@@ -100,6 +104,7 @@ public abstract class Device {
      * @post Device is terminated
      *      | isTerminated()
      */
+    @Raw
     public void terminate() {
         terminated = true;
     }
@@ -109,6 +114,7 @@ public abstract class Device {
      *
      * @return Whether this device has been terminated
      */
+    @Basic
     public boolean isTerminated() {
         return terminated;
     }

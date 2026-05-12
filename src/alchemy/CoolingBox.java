@@ -1,5 +1,8 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
 /**
  * Cooling box class for a machine that cools down ingredients in the laboratory.
  * A cooling box can hold at most one ingredient at a time and cools it to the cooling box's set temperature.
@@ -36,7 +39,7 @@ public class CoolingBox extends Device {
      * @effect Temperature is set to the given temperature
      *      | setTemperature(temperature)
      */
-    public CoolingBox(Temperature temperature) {
+    public CoolingBox(String temperature) {
         this.setTemperature(temperature);
     }
 
@@ -50,14 +53,9 @@ public class CoolingBox extends Device {
      *
      * @return Temperature of the cooling box
      *         | result == temperature
-     *
-     * @throws IllegalStateException If cooling box has been terminated
-     *      | isTerminated()
      */
+    @Basic
     public Temperature getTemperature() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This cooling box has been terminated.");
-        }
         return temperature;
     }
 
@@ -72,18 +70,12 @@ public class CoolingBox extends Device {
      *
      * @throws IllegalStateException If cooling box has been terminated
      *      | isTerminated()
-     *
-     * @throws IllegalArgumentException If temperature is null
-     *      | temperature == null
      */
-    public void setTemperature(Temperature temperature) throws IllegalStateException, IllegalArgumentException {
+    public void setTemperature(String temperature) throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This cooling box has been terminated.");
         }
-        if (temperature == null) {
-            throw new IllegalArgumentException("Temperature cannot be null.");
-        }
-        this.temperature = temperature;
+        this.temperature = new Temperature(temperature);
     }
 
     // =================================================================================
@@ -160,7 +152,12 @@ public class CoolingBox extends Device {
         Ingredient ingredient = internalIngredients.getFirst();
 
         if (ingredient.getTemperature().lessThan(this.getTemperature())) {
-            result = ingredient;
+            result = new Ingredient( // Create a copy!
+                    ingredient.getIngredientType(),
+                    ingredient.getTemperature(),
+                    ingredient.getState(),
+                    ingredient.getQuantity()
+            );
         } else {
             result = new Ingredient(
                     ingredient.getIngredientType(),
@@ -172,5 +169,26 @@ public class CoolingBox extends Device {
 
         // Clear internal ingredients
         internalIngredients.clear();
+    }
+
+    /**
+     * Terminate this cooling box
+     *
+     * @post Cooling box is terminated
+     *      | new.isTerminated()
+     *
+     * @post Location of cooling box is set to null
+     *      | new.getLocation() == null
+     *
+     * @post If location of cooling box was non-null, remove the cooling box from that location.
+     *      | if getLocation() != null:
+     *      |   (new) getLocation().getCoolingBox() == null
+     */
+    @Override @Raw
+    public void terminate() {
+        if (getLocation() != null) {
+            getLocation().setCoolingBox(null);
+        }
+        super.terminate();
     }
 }

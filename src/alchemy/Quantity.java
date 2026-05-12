@@ -84,6 +84,7 @@ public class Quantity {
      *
      * @return Map of form (unit,integer) describing this quantity
      */
+    @Basic
     public Map<Unit,Integer> getAmountsMap() {
         return new HashMap<>(amounts); // Copy the map, otherwise the user can break things!
     }
@@ -223,10 +224,7 @@ public class Quantity {
         newQuantityMap.put(Unit.SPOON, totalSpoons);
         newQuantityMap.put(goalState.getAllowedUnits().getFirst(), totalSmallestGoalUnit);
 
-        Quantity outputQuantity = new Quantity(goalState,newQuantityMap);
-        outputQuantity.simplifyUnit();
-
-        return outputQuantity;
+        return new Quantity(goalState,newQuantityMap);
     }
 
     /**
@@ -391,6 +389,7 @@ public class Quantity {
      * @return Whether this quantity is equal to zero
      *      | getSpoons() == 0
      */
+    @Basic
     public boolean isZero() {
         return getSpoons() == 0;
     }

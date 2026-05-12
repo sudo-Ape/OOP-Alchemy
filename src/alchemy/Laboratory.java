@@ -1,5 +1,7 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +85,7 @@ public class Laboratory {
      *
      * @return Capacity (number of storerooms) of this laboratory
      */
+    @Basic
     public int getCapacity() {
         return capacity;
     }
@@ -413,6 +416,7 @@ public class Laboratory {
      *
      * @return Cooling box stored in this laboratory
      */
+    @Basic
     public CoolingBox getCoolingBox() {
         return coolingBox;
     }
@@ -465,6 +469,7 @@ public class Laboratory {
      *
      * @return Oven stored in this laboratory
      */
+    @Basic
     public Oven getOven() {
         return oven;
     }
@@ -516,6 +521,7 @@ public class Laboratory {
      *
      * @return Kettle stored in this laboratory
      */
+    @Basic
     public Kettle getKettle() {
         return kettle;
     }
@@ -567,6 +573,7 @@ public class Laboratory {
      *
      * @return Transmogrifier stored in this laboratory
      */
+    @Basic
     public Transmogrifier getTransmogrifier() {
         return transmogrifier;
     }

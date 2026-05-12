@@ -60,6 +60,7 @@ public enum Unit {
      *
      * @return Number of spoons this unit is equal to
      */
+    @Basic
     public double getSpoons() {
         return spoons;
     }
@@ -69,6 +70,7 @@ public enum Unit {
      *
      * @return Display name for this unit
      */
+    @Basic
     public String getDisplayName() {
         return displayName;
     }

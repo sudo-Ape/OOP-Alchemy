@@ -1,5 +1,7 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+
 import java.util.*;
 
 /**
@@ -74,6 +76,7 @@ public class IngredientType {
      *
      * @return Standard temperature for this ingredient type
      */
+    @Basic
     public Temperature getStandardTemperature() {
         return standardTemperature;
     }
@@ -83,6 +86,7 @@ public class IngredientType {
      *
      * @return Standard temperature for this ingredient type, displayed in the user format
      */
+    @Basic
     public String getStandardTemperatureDisplay() {
         return standardTemperature.toUser();
     }
@@ -92,6 +96,7 @@ public class IngredientType {
      *
      * @return Standard state for this ingredient type
      */
+    @Basic
     public State getStandardState() {
         return standardState;
     }
@@ -101,6 +106,7 @@ public class IngredientType {
      *
      * @return Basic ingredients list for this ingredient type
      */
+    @Basic
     Set<String> getBasicIngredients() {
         return basicIngredients;
     }

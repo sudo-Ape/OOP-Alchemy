@@ -1,5 +1,7 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+
 /**
  * Helper class to describe the temperature of ingredients and ingredient types
  *
@@ -107,6 +109,7 @@ public class Temperature {
      *
      * @return The value of this temperature
      */
+    @Basic
     public int getValue() {
         return value;
     }

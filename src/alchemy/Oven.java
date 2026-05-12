@@ -1,4 +1,8 @@
 package alchemy;
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
+import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 import java.util.Random;
 
 
@@ -43,7 +47,7 @@ public class Oven extends Device {
      * @effect Temperature is set to given temperature
      *         | setTemperature(temperature)
      */
-    public Oven(Temperature temperature) {
+    public Oven(String temperature) {
         this.setTemperature(temperature);
     }
 
@@ -56,14 +60,9 @@ public class Oven extends Device {
      *
      * @return Temperature of the Oven
      *      | result == temperature
-     *
-     * @throws IllegalStateException If oven has been terminated
-     *      | isTerminated()
      */
+    @Basic
     public Temperature getTemperature() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This oven has been terminated.");
-        }
         return temperature;
     }
 
@@ -77,18 +76,12 @@ public class Oven extends Device {
      *
      * @throws IllegalStateException If oven has been terminated
      *      | isTerminated()
-     *
-     * @throws IllegalArgumentException If temperature is null
-     *      | temperature == null
      */
-    public void setTemperature(Temperature temperature) throws IllegalStateException, IllegalArgumentException {
+    public void setTemperature(String temperature) throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This oven has been terminated.");
         }
-        if (temperature == null) {
-            throw new IllegalArgumentException("Temperature cannot be null.");
-        }
-        this.temperature = temperature;
+        this.temperature = new Temperature(temperature);
     }
 
     // =================================================================================
@@ -167,7 +160,12 @@ public class Oven extends Device {
         Ingredient ingredient = internalIngredients.getFirst();
 
         if (this.getTemperature().lessThan(ingredient.getTemperature())) {
-            result = ingredient;
+            result = new Ingredient( // Create a copy!
+                    ingredient.getIngredientType(),
+                    ingredient.getTemperature(),
+                    ingredient.getState(),
+                    ingredient.getQuantity()
+            );
         } else {
             int deviation = rand.nextInt(11) - 5; // Random integer in interval [-5, 5]
             result = new Ingredient(
@@ -180,5 +178,26 @@ public class Oven extends Device {
 
         // Clear internal ingredients
         internalIngredients.clear();
+    }
+
+    /**
+     * Terminate this oven
+     *
+     * @post Oven is terminated
+     *      | new.isTerminated()
+     *
+     * @post Location of oven is set to null
+     *      | new.getLocation() == null
+     *
+     * @post If location of oven was non-null, remove the oven from that location.
+     *      | if getLocation() != null:
+     *      |   (new) getLocation().getOven() == null
+     */
+    @Override @Raw
+    public void terminate() {
+        if (getLocation() != null) {
+            getLocation().setOven(null);
+        }
+        super.terminate();
     }
 }

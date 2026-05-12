@@ -1,9 +1,11 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
 /**
  * Transmogrifier class for a machine that changes the state of ingredients.
  * A transmogrifier can hold at most one ingredient at a time and changes the state to the given goal state.
- * The quantity is converted to the new state, with any remainder smaller than a drop or pinch lost in the process.
  *
  * @invar The goal state of this transmogrifier must always be non-null
  *      | getGoalState() != null
@@ -18,7 +20,7 @@ public class Transmogrifier extends Device {
     // Fields
     // =================================================================================
     /**
-     * The state to which the ingredient will be converted to
+     * The state which the ingredient will be converted to
      */
     private State goalState;
 
@@ -47,14 +49,9 @@ public class Transmogrifier extends Device {
      *
      * @return Goal state for this transmogrifier
      *      | result == goalState
-     *
-     * @throws IllegalStateException If transmogrifier has been terminated
-     *      | isTerminated()
      */
+    @Basic
     public State getGoalState() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This transmogrifier has been terminated.");
-        }
         return goalState;
     }
 
@@ -154,7 +151,20 @@ public class Transmogrifier extends Device {
         clearInternalIngredients();
     }
 
-    @Override
+    /**
+     * Terminate this transmogrifier
+     *
+     * @post Transmogrifier is terminated
+     *      | new.isTerminated()
+     *
+     * @post Location of transmogrifier is set to null
+     *      | new.getLocation() == null
+     *
+     * @post If location of transmogrifier was non-null, remove the transmogrifier from that location.
+     *      | if getLocation() != null:
+     *      |   (new) getLocation().getTransmogrifier() == null
+     */
+    @Override @Raw
     public void terminate() {
         if (getLocation() != null) {
             getLocation().setTransmogrifier(null);

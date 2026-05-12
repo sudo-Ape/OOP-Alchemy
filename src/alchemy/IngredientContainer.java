@@ -5,14 +5,14 @@ import be.kuleuven.cs.som.annotate.Raw;
 import java.util.List;
 
 /**
- * Ingredient container class to hold a single ingredient of a given unit capacity.
+ * Ingredient container class to hold a single ingredient with quantity up to a given unit capacity.
  * A container can be empty or hold an ingredient whose quantity does not exceed the container's capacity.
  * No physical container exists for the smallest or largest units of each state.
  *
  * @invar The capacity of this container must always be a valid unit, or this container is terminated
  *      | canHaveAsCapacity(capacity) || isTerminated()
  *
- * @invar The quantity of the contents must not exceed the capacity, or this container is terminated or empty
+ * @invar The content quantity must not exceed the capacity, or this container is terminated, or it is empty
  *      | getContents() == null || getContents().getQuantity().lessThan(getCapacity()) || isTerminated()
  *
  * @author Casper Vermeeren; Loïck Sansen
@@ -52,16 +52,9 @@ public class IngredientContainer {
      *
      * @effect Given contents are added to this container
      *      | add(contents)
-     *
-     * @throws IllegalArgumentException If capacity is null or an invalid unit
-     *      | capacity == null
-     *
-     * @throws IllegalArgumentException If contents is null or exceeds the capacity
-     *      | contents == null || !contents.getQuantity().lessThan(capacity)
      */
     public IngredientContainer(Unit capacity, Ingredient contents) {
         this.setCapacity(capacity);
-        this.setContents(null);
         this.add(contents);
     }
 
@@ -75,9 +68,6 @@ public class IngredientContainer {
      *
      * @post Contents are set to null
      *      | new.getContents() == null
-     *
-     * @throws IllegalArgumentException If capacity is null or an invalid unit
-     *      | capacity == null
      */
     public IngredientContainer(Unit capacity) {
         this.setCapacity(capacity);
@@ -92,15 +82,12 @@ public class IngredientContainer {
      * @effect Capacity is set to the smallest unit that fits the contents
      *      | setCapacity(Quantity.selectAppropriateUnit(contents))
      *
-     * @effect Contents are set to given contents
-     *      | setContents(contents)
-     *
-     * @throws IllegalArgumentException If contents is null
-     *      | contents == null
+     * @effect Given contents are added to this container
+     *      | add(contents)
      */
     public IngredientContainer(Ingredient contents) {
         this.setCapacity(Quantity.selectAppropriateUnit(contents));
-        this.setContents(contents);
+        this.add(contents);
     }
 
     // =================================================================================
@@ -133,12 +120,8 @@ public class IngredientContainer {
      * @post The capacity of the container is set to the given unit
      *      | new.getCapacity() == capacity
      *
-     * @throws IllegalArgumentException If the given capacity is null
-     *      | capacity == null
-     *
-     * @throws IllegalArgumentException If the given capacity is a unit for which no container exists
-     *      | for some state in State.values():
-     *      |   capacity == state.getAllowedUnits().getFirst() || capacity == state.getAllowedUnits().getLast()
+     * @throws IllegalArgumentException If the given capacity is not allowed
+     *      | !canHaveAsCapacity(capacity)
      *
      * @throws IllegalStateException If container is terminated
      *      | isTerminated()
@@ -161,6 +144,27 @@ public class IngredientContainer {
         this.capacity = capacity;
     }
 
+    /**
+     * Check whether given unit capacity can be used
+     *
+     * @param capacity Given unit capacity
+     *
+     * @return True if the given capacity is not null and is not any state's smallest or largest allowed unit; false otherwise
+     *      | for state in State.values():
+     *      |   if capacity == state.getAllowedUnits().getFirst() || capacity == state.getAllowedUnits().getLast():
+     *      |       result == false
+     *      | result == (capacity != null)
+     */
+    public static boolean canHaveAsCapacity(Unit capacity) {
+        for (State state : State.values()) {
+            if (capacity == state.getAllowedUnits().getFirst() || capacity == state.getAllowedUnits().getLast()){
+                return false;
+            }
+        }
+
+        return capacity != null;
+    }
+
     // =================================================================================
     // Getters
     // =================================================================================
@@ -171,13 +175,23 @@ public class IngredientContainer {
      * @return Ingredient contents of this ingredient container
      *      | result == contents
      *
+     * @post If container contents have been terminated, remove the association
+     *      | if contents.isTerminated():
+     *      |   contents = null
+     *
      * @throws IllegalStateException If container is terminated
      *      | isTerminated()
      */
+    @Basic
     public Ingredient getContents() throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This container has been terminated.");
         }
+
+        if (contents != null && contents.isTerminated()) { // Safe-check if this container's contents have been terminated at some point
+            contents = null;
+        }
+
         return contents;
     }
 
@@ -191,6 +205,7 @@ public class IngredientContainer {
      * @throws IllegalStateException If container is terminated
      *      | isTerminated()
      */
+    @Basic
     public Unit getCapacity() throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This container has been terminated.");
@@ -207,6 +222,10 @@ public class IngredientContainer {
      * Add given ingredient to this container
      *
      * @param ingredient Given ingredient to add
+     *
+     * @post If old container contents were terminated, their association is removed
+     *      | if contents.isTerminated():
+     *      |   contents = null
      *
      * @post If the container was empty, its contents are set to the given ingredient
      *      | if getContents() == null:
@@ -226,12 +245,15 @@ public class IngredientContainer {
      *      | getContents() != null && !getContents().equals(ingredient)
      *
      * @throws IllegalArgumentException If adding the ingredient would exceed this container's capacity
-     *      | !ingredient.getQuantity().lessThan(getCapacity())
-     *      | || getContents() != null && !getContents().getQuantity().plus(ingredient.getQuantity()).lessThan(getCapacity())
+     *      | !ingredient.getQuantity().lessThan(getCapacity()) || getContents() != null && !getContents().getQuantity().plus(ingredient.getQuantity()).lessThan(getCapacity())
      */
     public void add(Ingredient ingredient) throws IllegalArgumentException, IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This container has been terminated.");
+        }
+
+        if (contents != null && contents.isTerminated()) { // Safe-check if this container's contents have been terminated at some point
+            contents = null;
         }
 
         if (ingredient == null)
@@ -265,6 +287,9 @@ public class IngredientContainer {
      * @effect Contents of this container is set to null
      *      | setContents(null)
      *
+     * @post Old contents are terminated
+     *      | getContents().isTerminated()
+     *
      * @throws IllegalStateException If container is terminated
      *      | isTerminated()
      */
@@ -273,26 +298,29 @@ public class IngredientContainer {
             throw new IllegalStateException("This container has been terminated.");
         }
 
-        // Terminate contents and empty
-        getContents().terminate();
-        setContents(null);
+        // Terminate contents and empty (if not empty already)
+        if (getContents() != null) {
+            getContents().terminate();
+            setContents(null);
+        }
     }
 
     /**
      * Check whether this container is empty
      *
-     * @return Whether this container is empty
-     *      | result == (getContents() == null)
+     * @post If old container contents were terminated, their association is removed
+     *      | if contents.isTerminated():
+     *      |   contents = null
      *
-     * @throws IllegalStateException If container is terminated
-     *      | isTerminated()
+     * @return Whether this container is empty or the contents' quantity is zero
+     *      | result == (getContents() == null || getContents().getQuantity().isZero())
      */
     public boolean isEmpty() throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("This container has been terminated.");
+        if (contents != null && contents.isTerminated()) { // Safe-check if this container's contents have been terminated at some point
+            contents = null;
         }
 
-        return this.getContents() == null;
+        return this.getContents() == null || this.getContents().getQuantity().isZero();
     }
 
     /**
@@ -301,6 +329,7 @@ public class IngredientContainer {
      * @return Whether this container has been terminated
      *      | result == terminated
      */
+    @Basic
     public boolean isTerminated() {
         return terminated;
     }
@@ -314,10 +343,8 @@ public class IngredientContainer {
      * @post If this container held an ingredient, that ingredient is terminated
      *      | if contents != null:
      *      |   contents.isTerminated()
-     @note Ingredient container has no bidirectional associations. It holds an undirectional reference to Ingredient,
-     *     but Ingredient has no back-reference to any container. Laboratory and Device both use containers as method
-     *     parameters/return values only - again no back reference.
      */
+    @Raw
     public void terminate() {
         if (contents != null) {
             contents.terminate();

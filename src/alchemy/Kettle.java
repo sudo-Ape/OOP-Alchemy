@@ -1,5 +1,7 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Raw;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -127,18 +129,17 @@ public class Kettle extends Device {
     /**
      * Terminate this kettle
      *
-     * @post Kettle is untied from any laboratory it may have been in
-     *      | if (old) getLocation() != null:
-     *      |   getLocation() == null
+     * @post Kettle is terminated
+     *      | new.isTerminated()
      *
-     * @post Any laboratory this kettle was tied to is updated
-     *      | if (old) getLocation != null:
-     *      |   getLocation().getCoolingBox() == null
+     * @post Location of kettle is set to null
+     *      | new.getLocation() == null
      *
-     * @effect Abstract superclass termination effects are performed
-     *      | super.terminate()
+     * @post If location of kettle was non-null, remove the kettle from that location.
+     *      | if getLocation() != null:
+     *      |   (new) getLocation().getKettle() == null
      */
-    @Override
+    @Override @Raw
     public void terminate() {
         if (getLocation() != null) {
             getLocation().setKettle(null);

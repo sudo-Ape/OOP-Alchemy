@@ -1,5 +1,8 @@
 package alchemy;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -281,6 +284,7 @@ public class Ingredient {
      *
      * @return Ingredient type of this ingredient
      */
+    @Basic
     public IngredientType getIngredientType() {
         return ingredientType;
     }
@@ -290,6 +294,7 @@ public class Ingredient {
      *
      * @return Temperature of this ingredient
      */
+    @Basic
     public Temperature getTemperature() {
         return temperature;
     }
@@ -299,6 +304,7 @@ public class Ingredient {
      *
      * @return State of this ingredient
      */
+    @Basic
     public State getState() {
         return state;
     }
@@ -308,6 +314,7 @@ public class Ingredient {
      *
      * @return Quantity of this ingredient
      */
+    @Basic
     public Quantity getQuantity() {
         return quantity;
     }
@@ -317,6 +324,7 @@ public class Ingredient {
      *
      * @return Special name of this ingredient
      */
+    @Basic
     public String getSpecialName() {
         return specialName;
     }
@@ -383,6 +391,7 @@ public class Ingredient {
      *
      * @return Whether this ingredient has been terminated
      */
+    @Basic
     public boolean isTerminated() {
         return terminated;
     }
@@ -393,6 +402,7 @@ public class Ingredient {
      * @post Ingredient is terminated
      *      | isTerminated()
      */
+    @Raw
     public void terminate() {
         terminated = true;
     }
