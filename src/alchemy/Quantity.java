@@ -80,10 +80,19 @@ public class Quantity {
     // =================================================================================
 
     /**
+     * Get the map of form (unit,integer) describing this quantity
+     *
+     * @return Map of form (unit,integer) describing this quantity
+     */
+    public Map<Unit,Integer> getAmountsMap() {
+        return new HashMap<>(amounts); // Copy the map, otherwise the user can break things!
+    }
+
+    /**
      * Calculate the total number of spoons this quantity is equal to
      *
      * @return The total, over all units, this quantity is equal to
-     *      | result == sum([unit.getSpoons() * value for (unit,value) in amounts])
+     *      | result == sum([unit.getSpoons() * value for (unit,value) in getAmountsMap()])
      */
     @Basic @Raw
     public double getSpoons() {
@@ -168,7 +177,7 @@ public class Quantity {
      * @param goalState Given state to sum to, determines rounding
      *
      * @return New quantity equal to the (rounded) sum of the given quantities, in given goal state
-     *      | WIP (please god nee please)
+     *      | Formal definition of this method is too complex.
      */
     public static Quantity sum(List<Quantity> quantities, State goalState) {
         // Sort by state
@@ -253,7 +262,7 @@ public class Quantity {
      * Simplify this unit to the most expanded form it can be
      *
      * @post Unit's map layout (x spoons, y sacks, z barrels, ...) is as optimal as possible, meaning no unit amounts overflow into the next unit's worth
-     *      | WIP (ik denk dat het niet van ons verwacht wordt dat we dit soort dingen formeel kunnen lol)
+     *      | Formal definition of this method is too complex.
      */
     public void simplifyUnit() {
         double totalSpoons = getSpoons();
@@ -286,7 +295,10 @@ public class Quantity {
      *      | other.lessThan(this)
      *
      * @return New quantity equal to this quantity minus given other quantity
-     *      | WIP
+     *      | resultSpoons = getSpoons() - other.getSpoons()
+     *      | (backwards) for unit in getState().getAllowedUnits():
+     *      |   result.get(unit) == floor(resultSpoons / unit.getSpoons())
+     *      |   resultSpoons = resultSpoons % unit.getSpoons()
      */
     public Quantity minus(Quantity other) {
         double resultingSpoons = getSpoons() - other.getSpoons();
@@ -354,8 +366,8 @@ public class Quantity {
      * @return The minimum appropriate Unit: where the ingredient's quantity fits into the resulting Unit, but not a smaller Unit
      *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().itemBefore(result))
      *
-     * @throws IllegalArgumentException If the given ingredient does not fit into a container.
-     *      | WIP, also this should be nominal...
+     * @pre Given ingredient should fit into a container
+     *      | ∃ unit in Unit.values(): ingredient.getQuantity().lessThan(unit)
      */
     public static Unit selectAppropriateUnit(Ingredient ingredient) throws IllegalArgumentException {
         List<Unit> allowed = ingredient.getState().getAllowedUnits();
@@ -370,7 +382,7 @@ public class Quantity {
             }
         }
 
-        throw new IllegalArgumentException("The given ingredient does not fit into a container.");
+        return allowed.get(allowed.size()-2); // Nominal breaking...
     }
 
     /**

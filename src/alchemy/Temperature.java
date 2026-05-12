@@ -54,7 +54,16 @@ public class Temperature {
      * @param userTemperature User-formatted input, e.g. "(50,0)" for -50
      *
      * @return After splitting "(x,y)" into integers x and y: -x if y=0; y if x==0; 20 if anything else happens
-     *      | WIP
+     *      | clean = userTemperature.replaceAll("[()\\s]","")
+     *      | parts = clean.split(",")
+     *      | left = Integer.parseInt(parts[0])
+     *      | right = Integer.parseInt(parts[1])
+     *      | if right != 0 and left != 0:
+     *      |   result == 20
+     *      | else if right == 0:
+     *      |   result == -left
+     *      | else:
+     *      |   result == right
      */
     private static int fromUser(String userTemperature) {
         // Strip parentheses/spaces and split by comma
@@ -76,7 +85,10 @@ public class Temperature {
      * Return the user-formatted string for this temperature's value
      *
      * @return (0,temp) if temperature is positive; (-temp,0) if temperature is negative; (0,0) otherwise
-     *      | WIP
+     *      | if getValue() < 0:
+     *      |   result == "("+abs(getvalue())+",0)"
+     *      | else:
+     *      |   result == "(0,"+getValue()+")"
      */
     public String toUser() {
         if (getValue() < 0) {

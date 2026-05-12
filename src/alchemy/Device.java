@@ -131,7 +131,7 @@ public abstract class Device {
      *      | getLocation() == null
      *
      * @post Given container is emptied
-     *      | WIP
+     *      | container.isEmpty()
      *
      * @post Given container is terminated
      *      | container.isTerminated()

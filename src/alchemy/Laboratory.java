@@ -134,10 +134,10 @@ public class Laboratory {
      *      | result.getCapacity() == Quantity.selectAppropriateUnit(result.getContents())
      *
      * @throws IllegalArgumentException If given quantity's state does not match the state of the stored ingredient
-     *      | WIP
+     *      | ∃ ingredient in storage: (ingredient.getIngredientType().getSimpleName() == name || ingredient.getSpecialName() == name) && ingredient.getState() != quantity.getState()
      *
      * @throws IllegalArgumentException If requested quantity exceeds the available amount in storage
-     *      | WIP
+     *      | ∃ ingredient in storage: (ingredient.getIngredientType().getSimpleName() == name || ingredient.getSpecialName() == name) && ingredient.getQuantity().getSpoons() < quantity.getSpoons()
      *
      * @throws IllegalArgumentException If laboratory contains no ingredient with the given name
      *      | for ingredient in storage:
@@ -231,7 +231,7 @@ public class Laboratory {
      * @param newIngredient Given ingredient to add
      *
      * @post If ingredient with same simple or special name as newIngredient is already present, mix them together after standardizing
-     *      | WIP
+     *      | Formal definition of this method is too complex.
      *
      * @post If no ingredient with same simple or special name is present, simply add the standardized ingredient to storage
      *      | storage.contains(new Ingredient(newIngredient.getIngredientType(),newIngredient.getIngredientType().getStandardTemperature(),newIngredient.getIngredientType().getStandardState(),newIngredient.getQuantity())
@@ -246,10 +246,10 @@ public class Laboratory {
      *      | newIngredient.getIngredientType().getStandardTemperature().lessThan(newIngredient.getTemperature()) && getCoolingBox() == null
      *
      * @throws IllegalStateException If mixing is required and no kettle is available
-     *      | WIP
+     *      | ∃ ingredient in storage: (ingredient.getIngredientType().getSimpleName() == name || ingredient.getSpecialName() == name) && getKettle() == null
      *
      * @throws IllegalArgumentException If addition of newIngredient causes storage to exceed its capacity
-     *      | WIP
+     *      | getStoredTotal() + newIngredient.getQuantity().getSpoons() > getCapacity() * Unit.STOREROOM.getSpoons()
      *
      * @throws IllegalArgumentException If given ingredient is null or terminated
      *      | newIngredient == null || newIngredient.isTerminated()

@@ -73,7 +73,7 @@ public class Ingredient {
      * @param standardTemperature Given standard temperature
      *
      * @effect Ingredient type is set to a new ingredient type with standardState, standardTemperature, and a set containing only basicIngredient as basicIngredients
-     *      | WIP
+     *      | setIngredientType(new IngredientType(standardTemperature, standardState, Set.of(basicIngredient)))
      *
      * @effect Quantity is set to given quantity
      *      | setQuantity(quantity)
@@ -104,7 +104,7 @@ public class Ingredient {
      * @param quantity Given quantity
      *
      * @effect Ingredient type is set to a new ingredient type with state, temperature, and a set containing only basicIngredient as basicIngredients
-     *      | WIP
+     *      | setIngredientType(new IngredientType(temperature, state, Set.of(basicIngredient)))
      *
      * @effect Quantity is set to given quantity
      *      | setQuantity(quantity)
@@ -404,8 +404,17 @@ public class Ingredient {
     /**
      * Get the full name of this ingredient
      *
-     * @return Simple name preceded by "Cooled" or "Heated" based on temperature's relation to standard temperature; if special name available, then "SPECIALNAME (Heated/Cooled+SIMPLENAME)"
-     *      | WIP
+     * @return Simple name preceded by "Cooled" or "Heated" or nothing based on temperature's relation to standard temperature; if special name available, then "SPECIALNAME (Heated/Cooled+SIMPLENAME)"
+     *      | if getTemperature().equals(getIngredientType().getStandardTemperature()):
+     *      |   tempName = getIngredientType().getSimpleName()
+     *      | else if getTemperature().lessThan(getIngredientType().getStandardTemperature()):
+     *      |   tempName = "Cooled "+getIngredientType().getSimpleName()
+     *      | else:
+     *      |   tempName = "Heated "+getIngredientType().getSimpleName()
+     *      | if getSpecialName().isEmpty():
+     *      |   result == tempName
+     *      | else:
+     *      |   result == getSpecialName+" ("+tempName+")"
      */
     public String getFullName() {
         // Generic full name
