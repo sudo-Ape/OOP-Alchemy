@@ -1,6 +1,6 @@
 # OGP Alchemy
 
-A Java implementation of an alchemical RPG domain model, developed as the exam project for *Object-Oriented Programming 2025–2026* at KU Leuven.
+A Java implementation of an RPG alchemy package, developed as the exam project for *Object-Oriented Programming 2025–2026* at KU Leuven.
 
 ---
 
@@ -8,7 +8,7 @@ A Java implementation of an alchemical RPG domain model, developed as the exam p
 
 OGP Alchemy models the core business logic of a medieval RPG centred around alchemical ingredients, containers, devices, a laboratory, and recipes. The project focuses exclusively on object-oriented design — there is no graphical interface or user interaction layer.
 
-The codebase demonstrates applied OOP principles including encapsulation strategies (defensive, nominal, and total programming), bidirectional associations, domain-driven modelling, and layered abstraction.
+The codebase demonstrates applied OOP principles including encapsulation strategies (defensive, nominal, and total programming), bidirectional associations, and testing suites.
 
 ---
 
@@ -84,7 +84,7 @@ The laboratory serves as the central inventory manager. It normalises ingredient
 
 ## UML Design
 
-A UML class diagram is included in the repository root (`uml_design.pdf`). It covers all implemented classes — excluding exception and test classes — and documents class names, fields, and public method signatures.
+A UML class diagram is included in the repository root (`uml_design.pdf`) - no its not lol. It covers all implemented classes — excluding exception and test classes — and documents class names, fields, and public method signatures.
 
 ---
 
@@ -114,4 +114,4 @@ Tests target the four device classes and the methods they invoke, using JUnit 5.
 
 Loïck Sansen · Casper Vermeeren
 
-*KU Leuven — Faculty of Physics & Computer Science, 2025–2026*
+*KU Leuven — Faculty of Science & Technology, 2025–2026*
