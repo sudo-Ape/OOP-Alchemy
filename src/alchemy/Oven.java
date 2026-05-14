@@ -2,7 +2,6 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
-import javax.xml.crypto.dsig.spec.DigestMethodParameterSpec;
 import java.util.Random;
 
 
@@ -62,7 +61,7 @@ public class Oven extends Device {
      *      | result == temperature
      */
     @Basic
-    public Temperature getTemperature() throws IllegalStateException {
+    public Temperature getTemperature() {
         return temperature;
     }
 

@@ -22,7 +22,7 @@ public class Transmogrifier extends Device {
     /**
      * The state which the ingredient will be converted to
      */
-    private State goalState;
+    private State goalState = null;
 
     // =================================================================================
     // Constructor

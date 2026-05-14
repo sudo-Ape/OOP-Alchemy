@@ -25,7 +25,7 @@ public class CoolingBox extends Device {
     /**
      * The temperature at which this cooling box operates
      */
-    private Temperature temperature;
+    private Temperature temperature = null;
 
     // =================================================================================
     // Constructor
@@ -55,7 +55,7 @@ public class CoolingBox extends Device {
      *         | result == temperature
      */
     @Basic
-    public Temperature getTemperature() throws IllegalStateException {
+    public Temperature getTemperature() {
         return temperature;
     }
 

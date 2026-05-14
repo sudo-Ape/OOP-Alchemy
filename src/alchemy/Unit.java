@@ -1,7 +1,6 @@
 package alchemy;
 
 import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * Enum to represent an object's measurement unit

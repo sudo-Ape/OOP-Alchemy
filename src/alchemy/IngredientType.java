@@ -13,6 +13,9 @@ import java.util.*;
  * @invar Standard temperature must always be valid
  *      | canHaveAsStandardTemperature(getStandardTemperature())
  *
+ * @invar Standard state must always be valid
+ *      | canHaveAsStandardState(getStandardState())
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class IngredientType {
@@ -41,6 +44,9 @@ public class IngredientType {
      */
     private Set<String> basicIngredients = new HashSet<>(); // Set to ensure no duplicate basic ingredients (possibly caused by mixing)
 
+    /**
+     * Default basic ingredients list for total programming
+     */
     public static final Set<String> defaultBasicIngredients = Set.of("Water");
 
     // =================================================================================
@@ -128,7 +134,7 @@ public class IngredientType {
      *
      * @param basicIngredients Given set of basic ingredient names
      */
-    public void setBasicIngredients(Set<String> basicIngredients) {
+    private void setBasicIngredients(Set<String> basicIngredients) {
         if (canHaveAsBasicIngredients(basicIngredients)) {
             this.basicIngredients = basicIngredients;
         } else {
@@ -160,11 +166,18 @@ public class IngredientType {
      *
      * @param standardState The given standard state
      *
-     * @post Standard state is given state
-     *      | new.getStandardState() == standardState
+     * @post Standard state is given state; liquid if invalid
+     *      | if canHaveAsStandardState(standardState()):
+     *      |   new.getStandardState() == standardState
+     *      | else:
+     *      |   new.getStandardState() == State.LIQUID
      */
     private void setStandardState(State standardState) {
-        this.standardState = standardState;
+        if (canHaveAsStandardState(standardState)) {
+            this.standardState = standardState;
+        } else {
+            this.standardState = State.LIQUID;
+        }
     }
 
     // =================================================================================
@@ -276,6 +289,17 @@ public class IngredientType {
      */
     public static boolean canHaveAsStandardTemperature(Temperature standardTemperature) {
         return standardTemperature != null;
+    }
+
+    /**
+     * Check if given standard state is valid
+     *
+     * @param standardState Given standard state
+     *
+     * @return True if given standard state is effective; false otherwise
+     */
+    public static boolean canHaveAsStandardState(State standardState) {
+        return standardState != null;
     }
 
     // =================================================================================

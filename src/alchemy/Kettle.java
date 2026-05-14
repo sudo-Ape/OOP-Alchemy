@@ -97,10 +97,10 @@ public class Kettle extends Device {
             int dist = type.getStandardTemperature().difference(stateDiffTemperature);
             if (dist < nearestToStateDiff || resultStdTemp == null) {
                 nearestToStateDiff = dist;
-                resultState = ingredient.getState();
+                resultState = ingredient.getIngredientType().getStandardState();
                 resultStdTemp = type.getStandardTemperature();
             } else if (dist == nearestToStateDiff) {
-                if (ingredient.getState() == priorityState) {
+                if (ingredient.getIngredientType().getStandardState() == priorityState) {
                     resultState = priorityState;
                 }
                 if (resultStdTemp.lessThan(type.getStandardTemperature())) {

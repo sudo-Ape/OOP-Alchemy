@@ -5,6 +5,9 @@ import be.kuleuven.cs.som.annotate.Basic;
 /**
  * Helper class to describe the temperature of ingredients and ingredient types
  *
+ * @invar Value must always be valid
+ *      | hasProperValue()
+ *
  * @author Casper Vermeeren; Loïck Sansen
  */
 public class Temperature {
@@ -16,8 +19,14 @@ public class Temperature {
      */
     private final int value;
 
+    /**
+     * The maximum temperature (in both cold and hot directions) for temperatures
+     */
     public static final int maxTemperature = 10000;
 
+    /**
+     * The default temperature to fall back to in cases of invalid user input
+     */
     public static final int defaultTemperature = 20;
 
     // =================================================================================
@@ -29,12 +38,22 @@ public class Temperature {
      *
      * @param value Given temperature value
      *
-     * @post Value is given value
-     *      | new.getValue() == value
+     * @post Value is given value; capped to inclusive interval [-maxTemperature,maxTemperature]
+     *      | if value > maxTemperature:
+     *      |   new.getValue() == maxTemperature
+     *      | else if value < -maxTemperature:
+     *      |   new.getValue() == -maxTemperature
+     *      | else:
+     *      |   new.getValue() == value
      *
      * @note This constructor is package-private: the user cannot create temperatures, as other classes will handle this!
      */
     Temperature(int value) {
+        if (value > maxTemperature) {
+            value = maxTemperature;
+        } else if (value < -maxTemperature) {
+            value = -maxTemperature;
+        }
         this.value = value;
     }
 
@@ -109,7 +128,7 @@ public class Temperature {
      *
      * @return (0,temp) if temperature is positive; (-temp,0) if temperature is negative; (0,0) otherwise
      *      | if getValue() < 0:
-     *      |   result == "("+abs(getvalue())+",0)"
+     *      |   result == "("+abs(getValue())+",0)"
      *      | else:
      *      |   result == "(0,"+getValue()+")"
      */
@@ -168,7 +187,17 @@ public class Temperature {
      *      | result == {getColdness(),getHotness()}
      */
     public int[] getTemperature() {
-        return {getColdness(),getHotness()};
+        return new int[]{getColdness(), getHotness()};
+    }
+
+    /**
+     * Check whether this temperature has a proper value
+     *
+     * @return True if value lies in inclusive interval [-maxTemperature,maxTemperature]; false otherwise
+     *      | getValue() <= maxTemperature && getValue() >= -maxTemperature
+     */
+    public boolean hasProperValue() {
+        return getValue() <= maxTemperature && getValue() >= -maxTemperature;
     }
 
     // =================================================================================

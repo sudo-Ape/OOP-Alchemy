@@ -21,7 +21,7 @@ public class Laboratory {
     /**
      * Integer amount of storerooms this laboratory can hold in storage
      */
-    private int capacity; // Number of Storerooms in capacity
+    private int capacity = 1; // Number of Storerooms in capacity
 
     /**
      * List of all ingredients stored in the laboratory
@@ -229,35 +229,44 @@ public class Laboratory {
     }
 
     /**
-     * Add the given ingredient to laboratory storage
+     * Add the contents of a given ingredient container to laboratory storage
      *
-     * @param newIngredient Given ingredient to add
+     * @param container Given ingredient container with contents to add
      *
-     * @post If ingredient with same simple or special name as newIngredient is already present, mix them together after standardizing
+     * @post If ingredient with same simple or special name as contents is already present, mix them together after standardizing
      *      | Formal definition of this method is too complex.
      *
      * @post If no ingredient with same simple or special name is present, simply add the standardized ingredient to storage
-     *      | storage.contains(new Ingredient(newIngredient.getIngredientType(),newIngredient.getIngredientType().getStandardTemperature(),newIngredient.getIngredientType().getStandardState(),newIngredient.getQuantity())
+     *      | storage.contains(new Ingredient(container.getContents().getIngredientType(),container.getContents().getIngredientType().getStandardTemperature(),container.getContents().getIngredientType().getStandardState(),container.getContents().getQuantity())
      *
      * @throws IllegalStateException If a change of state is required and no transmogrifier is available
-     *      | newIngredient.getState() != newIngredient.getIngredientType().getStandardState() && getTransmogrifier() == null
+     *      | container.getContents().getState() != container.getContents().getIngredientType().getStandardState() && getTransmogrifier() == null
      *
      * @throws IllegalStateException If an increase in temperature is required and no oven is available
-     *      | newIngredient.getTemperature().lessThan(newIngredient.getIngredientType().getStandardTemperature()) && getOven() == null
+     *      | container.getContents().getTemperature().lessThan(container.getContents().getIngredientType().getStandardTemperature()) && getOven() == null
      *
      * @throws IllegalStateException If a decrease in temperature is required and no cooling box is available
-     *      | newIngredient.getIngredientType().getStandardTemperature().lessThan(newIngredient.getTemperature()) && getCoolingBox() == null
+     *      | container.getContents().getIngredientType().getStandardTemperature().lessThan(container.getContents().getTemperature()) && getCoolingBox() == null
      *
      * @throws IllegalStateException If mixing is required and no kettle is available
      *      | ∃ ingredient in storage: (ingredient.getIngredientType().getSimpleName() == name || ingredient.getSpecialName() == name) && getKettle() == null
      *
-     * @throws IllegalArgumentException If addition of newIngredient causes storage to exceed its capacity
-     *      | getStoredTotal() + newIngredient.getQuantity().getSpoons() > getCapacity() * Unit.STOREROOM.getSpoons()
+     * @throws IllegalArgumentException If addition of container contents causes storage to exceed its capacity
+     *      | getStoredTotal() + container.getContents().getQuantity().getSpoons() > getCapacity() * Unit.STOREROOM.getSpoons()
      *
-     * @throws IllegalArgumentException If given ingredient is null or terminated
-     *      | newIngredient == null || newIngredient.isTerminated()
+     * @throws IllegalArgumentException If container contents are null or terminated
+     *      | container.getContents() == null || container.getContents().isTerminated()
+     *
+     * @throws IllegalArgumentException If container is null or terminated
+     *      | container == null || container.isTerminated()
      */
-    public void addIngredient(Ingredient newIngredient) throws IllegalStateException, IllegalArgumentException {
+    public void addIngredient(IngredientContainer container) throws IllegalStateException, IllegalArgumentException {
+        if (container == null || container.isTerminated()) {
+            throw new IllegalArgumentException("Given container is not effective or terminated.");
+        }
+
+        Ingredient newIngredient = container.getContents();
+
         // Check if valid ingredient
         if (newIngredient == null || newIngredient.isTerminated()) {
             throw new IllegalArgumentException("Given ingredient is not effective or terminated.");
@@ -319,7 +328,16 @@ public class Laboratory {
 
         if (!newIngredient.isTerminated()) {
             // None of this in storage yet...
-            storage.add(newIngredient);
+            Ingredient toAdd = new Ingredient( // Make a copy!
+                    newIngredient.getIngredientType(),
+                    newIngredient.getTemperature(),
+                    newIngredient.getState(),
+                    newIngredient.getQuantity()
+            );
+            if (!newIngredient.getSpecialName().isEmpty()) {
+                toAdd.setSpecialName(newIngredient.getSpecialName());
+            }
+            storage.add(toAdd);
 
             // Check if capacity has been exceeded
             if (getStoredTotal() > getCapacity() * Unit.STOREROOM.getSpoons()) {
@@ -327,7 +345,11 @@ public class Laboratory {
                 storage.remove(newIngredient);
                 throw new IllegalArgumentException("Addition of given ingredient makes storage exceed its capacity.");
             }
+
+            newIngredient.terminate();
         }
+
+        container.terminate();
     }
 
     /**
@@ -438,8 +460,8 @@ public class Laboratory {
      * @post If given cooling box was connected somewhere, it is disconnected
      *      | coolingBox.getLocation().getCoolingBox() == null
      *
-     * @throws IllegalArgumentException If given cooling box has been terminated
-     *      | coolingBox.isTerminated()
+     * @throws IllegalArgumentException If given cooling box has been terminated or is null
+     *      | coolingBox == null || coolingBox.isTerminated()
      */
     public void setCoolingBox(CoolingBox coolingBox) throws IllegalArgumentException {
         if (coolingBox != null && coolingBox.isTerminated()) {
@@ -491,8 +513,8 @@ public class Laboratory {
      * @post If given oven was connected somewhere, it is disconnected
      *      | oven.getLocation().getOven() == null
      *
-     * @throws IllegalArgumentException If given oven has been terminated
-     *      | oven.isTerminated()
+     * @throws IllegalArgumentException If given oven has been terminated or is null
+     *      | oven == null || oven.isTerminated()
      */
     public void setOven(Oven oven) throws IllegalArgumentException {
         if (oven != null && oven.isTerminated()) {
@@ -543,8 +565,8 @@ public class Laboratory {
      * @post If given kettle was connected somewhere, it is disconnected
      *      | kettle.getLocation().getKettle() == null
      *
-     * @throws IllegalArgumentException If given kettle has been terminated
-     *      | kettle.isTerminated()
+     * @throws IllegalArgumentException If given kettle has been terminated or is null
+     *      | kettle == null || kettle.isTerminated()
      */
     public void setKettle(Kettle kettle) throws IllegalArgumentException {
         if (kettle != null && kettle.isTerminated()) {
@@ -595,8 +617,8 @@ public class Laboratory {
      * @post If given transmogrifier was connected somewhere, it is disconnected
      *      | transmogrifier.getLocation().getTransmogrifier() == null
      *
-     * @throws IllegalArgumentException If given transmogrifier has been terminated
-     *      | transmogrifier.isTerminated()
+     * @throws IllegalArgumentException If given transmogrifier has been terminated or is null
+     *      | transmogrifier == null || transmogrifier.isTerminated()
      */
     public void setTransmogrifier(Transmogrifier transmogrifier) throws IllegalArgumentException {
         if (transmogrifier != null && transmogrifier.isTerminated()) {

@@ -83,46 +83,61 @@ public class IngredientTest {
 
     @Test
     public void illegalNameTest1() { // Illegal char
-        assertThrows(IllegalArgumentException.class, () -> {
-            Map<Unit, Integer> myQuantities = new HashMap<>();
-            myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("Mac & Cheese","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
-        });
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,2);
+        Ingredient myIngredient = new Ingredient("Mac & Cheese","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
     }
 
     @Test
     public void illegalNameTest2() { // One-letter word
-        assertThrows(IllegalArgumentException.class, () -> {
-            Map<Unit, Integer> myQuantities = new HashMap<>();
-            myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("Eye Of Y","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
-        });
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,2);
+        Ingredient myIngredient = new Ingredient("Eye Of Y","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
     }
 
     @Test
     public void illegalNameTest3() { // Two-letter single word
-        assertThrows(IllegalArgumentException.class, () -> {
-            Map<Unit, Integer> myQuantities = new HashMap<>();
-            myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("Xe","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
-        });
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,2);
+        Ingredient myIngredient = new Ingredient("Xe","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
     }
 
     @Test
     public void illegalNameTest4() { // Illegal casing
-        assertThrows(IllegalArgumentException.class, () -> {
-            Map<Unit, Integer> myQuantities = new HashMap<>();
-            myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("Eye of the Tiger","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
-        });
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,2);
+        Ingredient myIngredient = new Ingredient("Eye of the Tiger","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
     }
 
     @Test
     public void illegalNameTest5() { // Illegal casing (again)
-        assertThrows(IllegalArgumentException.class, () -> {
-            Map<Unit, Integer> myQuantities = new HashMap<>();
-            myQuantities.put(Unit.JUG,2);
-            Ingredient myIngredient = new Ingredient("CLANKER CAKE","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
-        });
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,2);
+        Ingredient myIngredient = new Ingredient("CLANKER CAKE","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
+    }
+
+    @Test
+    public void illegalNameTest6() { // Illegal words
+        Map<Unit, Integer> myQuantities = new HashMap<>();
+        myQuantities.put(Unit.JUG,3);
+        Ingredient myIngredient = new Ingredient("Water Mixed With Fanta","(0,5)",State.LIQUID,new Quantity(State.LIQUID,myQuantities),State.LIQUID,"(0,15)");
+        assertEquals("Water",myIngredient.getIngredientType().getSimpleName());
+    }
+
+    @Test
+    public void illegalTemperatureTest1() {
+        Ingredient myIngredient = new Ingredient("Polar Cream","foo bar",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,5)));
+        assertEquals(Temperature.defaultTemperature,myIngredient.getTemperature().getValue());
+    }
+
+    @Test
+    public void illegalTemperatureTest2() {
+        Ingredient myIngredient = new Ingredient("The Sun","(0,10000000)",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,5)));
+        assertEquals(Temperature.maxTemperature,myIngredient.getTemperature().getValue());
     }
 }

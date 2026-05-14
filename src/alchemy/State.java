@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * Enum to describe the physical state of an object

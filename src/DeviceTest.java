@@ -205,7 +205,7 @@ public class DeviceTest {
     @Test
     public void mixTest1() { // Mix two ingredients and check all calculations (no ties)
         Ingredient myIngredient1 = new Ingredient("Apple","(0,10)",State.POWDER,new Quantity(State.POWDER,Map.of(Unit.SPOON,4)),State.POWDER,"(0,15)");
-        Ingredient myIngredient2 = new Ingredient("Zebra Melon","(0,35)",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,12)),State.POWDER,"(0,35");
+        Ingredient myIngredient2 = new Ingredient("Zebra Melon","(0,35)",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,12)),State.POWDER,"(0,35)");
 
         IngredientContainer myIngredientContainer1 = new IngredientContainer(myIngredient1);
         IngredientContainer myIngredientContainer2 = new IngredientContainer(myIngredient2);
@@ -227,7 +227,7 @@ public class DeviceTest {
     @Test
     public void mixTest2() { // Mix two ingredients and check all calculations (ties)
         Ingredient myIngredient1 = new Ingredient("Apple","(0,10)",State.POWDER,new Quantity(State.POWDER,Map.of(Unit.SPOON,4)),State.POWDER,"(0,25)");
-        Ingredient myIngredient2 = new Ingredient("Zebra Melon","(0,35)",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,12)),State.POWDER,"(0,15");
+        Ingredient myIngredient2 = new Ingredient("Zebra Melon","(0,35)",State.LIQUID,new Quantity(State.LIQUID,Map.of(Unit.SPOON,12)),State.LIQUID,"(0,15)");
 
         IngredientContainer myIngredientContainer1 = new IngredientContainer(myIngredient1);
         IngredientContainer myIngredientContainer2 = new IngredientContainer(myIngredient2);

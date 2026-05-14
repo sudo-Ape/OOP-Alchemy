@@ -2,8 +2,6 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
-import java.util.List;
-
 /**
  * Ingredient container class to hold a single ingredient with quantity up to a given unit capacity.
  * A container can be empty or hold an ingredient whose quantity does not exceed the container's capacity.
@@ -249,6 +247,10 @@ public class IngredientContainer {
             throw new IllegalStateException("This container has been terminated.");
         }
 
+        if (ingredient == null) {
+            throw new IllegalArgumentException("Cannot add null ingredient.");
+        }
+
         if (!ingredient.getState().getAllowedUnits().contains(getCapacity())) {
             throw new IllegalArgumentException("This container cannot hold an ingredient of that state.");
         }
@@ -256,9 +258,6 @@ public class IngredientContainer {
         if (contents != null && contents.isTerminated()) { // Safe-check if this container's contents have been terminated at some point
             contents = null;
         }
-
-        if (ingredient == null)
-            throw new IllegalArgumentException("Cannot add null ingredient.");
 
         if (getContents() == null) { // Container is empty
             if (!ingredient.getQuantity().lessThan(getCapacity())) {

@@ -3,7 +3,6 @@ package alchemy;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -20,6 +19,9 @@ import java.util.Set;
  *
  * @invar Special name must always be valid
  *      | canHaveAsSpecialName(getSpecialName())
+ *
+ * @invar State must always be valid
+ *      | canHaveAsState(getState())
  *
  * @author Casper Vermeeren; Loïck Sansen
  */
@@ -239,13 +241,21 @@ public class Ingredient {
      * @throws IllegalStateException If ingredient has been terminated
      *      | isTerminated()
      *
+     * @throws IllegalArgumentException If given state is invalid
+     *      | !canHaveAsState(state)
+     *
      * @note This method is package-private: the user should not randomly change the state, but specific in-package uses will!
      */
-    void setState(State state) throws IllegalStateException {
+    void setState(State state) throws IllegalStateException, IllegalArgumentException {
         if (isTerminated()) {
             throw new IllegalStateException("This ingredient has been terminated.");
         }
-        this.state = state;
+
+        if (canHaveAsState(state)) {
+            this.state = state;
+        } else {
+            throw new IllegalArgumentException("Given state is invalid.");
+        }
     }
 
     /**
@@ -401,6 +411,18 @@ public class Ingredient {
      */
     public boolean canHaveAsQuantity(Quantity quantity) {
         return quantity != null && quantity.getState() == getState();
+    }
+
+    /**
+     * Check whether given state is valid
+     *
+     * @param state Given state
+     *
+     * @return True if given state is effective; false otherwise
+     *      | result == (state != null)
+     */
+    public static boolean canHaveAsState(State state) {
+        return state != null;
     }
 
     // =================================================================================

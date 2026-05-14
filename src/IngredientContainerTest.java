@@ -61,8 +61,8 @@ public class IngredientContainerTest {
 
     @Test
     public void addTest() {
-        Ingredient myIngredient1 = new Ingredient("Fanta Peach","(0,5)", State.LIQUID, new Quantity(State.LIQUID, Map.of(Unit.SPOON,5)));
-        Ingredient myIngredient2 = new Ingredient("Fanta Peach","(0,5)", State.LIQUID, new Quantity(State.LIQUID, Map.of(Unit.SPOON,8)));
+        Ingredient myIngredient1 = new Ingredient("Fanta Cake","(0,5)", State.POWDER, new Quantity(State.POWDER, Map.of(Unit.SPOON,5)));
+        Ingredient myIngredient2 = new Ingredient("Fanta Cake","(0,5)", State.POWDER, new Quantity(State.POWDER, Map.of(Unit.SPOON,8)));
 
         myContainer.add(myIngredient1);
         myContainer.add(myIngredient2);
@@ -92,8 +92,8 @@ public class IngredientContainerTest {
     @Test
     public void illegalAddTest2() { // Try adding non-equal ingredient to partially filled container
         assertThrows(IllegalArgumentException.class, () -> {
-            Ingredient myIngredient1 = new Ingredient("Strawberry Juice","(0,5)", State.LIQUID, new Quantity(State.LIQUID, Map.of(Unit.SPOON,50)));
-            Ingredient myIngredient2 = new Ingredient("Blueberry Juice","(0,5)", State.LIQUID, new Quantity(State.LIQUID, Map.of(Unit.SPOON,80)));
+            Ingredient myIngredient1 = new Ingredient("Strawberry Dust","(0,5)", State.POWDER, new Quantity(State.POWDER, Map.of(Unit.SPOON,50)));
+            Ingredient myIngredient2 = new Ingredient("Blueberry Dust","(0,5)", State.POWDER, new Quantity(State.POWDER, Map.of(Unit.SPOON,80)));
 
             myContainer.add(myIngredient1);
             myContainer.add(myIngredient2);
@@ -104,6 +104,14 @@ public class IngredientContainerTest {
     public void illegalAddTest3() { // Try adding a null ingredient
         assertThrows(IllegalArgumentException.class, () -> {
             myContainer.add(null);
+        });
+    }
+
+    @Test
+    public void illegalAddTest4() { // Try adding wrong state (capacity = BOX, so can't add liquids!)
+        assertThrows(IllegalArgumentException.class, () -> {
+            Ingredient myIngredient = new Ingredient(new Quantity(State.LIQUID,Map.of(Unit.JUG,1)));
+            myContainer.add(myIngredient);
         });
     }
 

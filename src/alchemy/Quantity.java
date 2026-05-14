@@ -406,7 +406,7 @@ public class Quantity {
      * @param ingredient The ingredient to select a unit for
      *
      * @return The minimum appropriate Unit: where the ingredient's quantity fits into the resulting Unit, but not a smaller Unit
-     *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().get(ingredient.getState().getAllowedUnits().indexOf(result)-1)))
+     *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().get(ingredient.getState().getAllowedUnits().indexOf(result)-1))
      *
      * @pre Given ingredient should be effective
      *      | ingredient != null
@@ -462,11 +462,30 @@ public class Quantity {
      *
      * @param state Given state
      *
-     * @post State is given state
-     *      | new.getState() == state
+     * @post State is given state; liquid if invalid
+     *      | if canHaveAsState(state):
+     *      |   new.getState() == state
+     *      | else:
+     *      |   new.getState() == State.LIQUID
      */
     private void setState(State state) {
-        this.state = state;
+        if (canHaveAsState(state)) {
+            this.state = state;
+        } else {
+            this.state = State.LIQUID;
+        }
+    }
+
+    /**
+     * Check whether given state is valid
+     *
+     * @param state Given state
+     *
+     * @return True if given state is effective; false otherwise
+     *      | result == (state != null)
+     */
+    public static boolean canHaveAsState(State state) {
+        return state != null;
     }
 
     /**
