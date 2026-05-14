@@ -221,7 +221,7 @@ public abstract class Device {
      * @throws IllegalStateException If device has been terminated
      *      | isTerminated()
      *
-     * @note Meant to be overwritten by implementing subclasses, where they call this first (via super) and then do their own checks and running!
+     * @note Meant to be overwritten by implementing subclasses, where they call this first (via super) and then do their own checks and running! (Liskov)
      */
     public void run() throws IllegalStateException {
         if (getLocation() == null) {

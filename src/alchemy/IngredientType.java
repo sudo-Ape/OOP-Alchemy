@@ -22,12 +22,12 @@ public class IngredientType {
     /**
      * Variable referencing the standard temperature of this ingredient type
      */
-    private Temperature standardTemperature;
+    private Temperature standardTemperature = null;
 
     /**
      * Variable referencing the state enum of this ingredient type
      */
-    private State standardState;
+    private State standardState = null;
 
     /**
      * Variable referencing a set containing the basic ingredient names present in this ingredient type
@@ -40,6 +40,8 @@ public class IngredientType {
      *      |  canHaveAsBasicIngredient(S)
      */
     private Set<String> basicIngredients = new HashSet<>(); // Set to ensure no duplicate basic ingredients (possibly caused by mixing)
+
+    public static final Set<String> defaultBasicIngredients = Set.of("Water");
 
     // =================================================================================
     // Constructors
@@ -118,19 +120,19 @@ public class IngredientType {
     /**
      * Set the basic ingredients for this ingredient type
      *
-     * @throws IllegalArgumentException If the given set of basic ingredients is not allowed
-     *      | !canHaveAsBasicIngredients(basicIngredients)
-     *
-     * @post Basic ingredients set is given set
-     *      | new.getBasicIngredients() == basicIngredients
+     * @post Basic ingredients set is given set or defaultBasicIngredients if invalid
+     *      | if canHaveAsBasicIngredients(basicIngredients):
+     *      |   new.getBasicIngredients() == basicIngredients
+     *      | else:
+     *      |   new.getBasicIngredients() == IngredientType.defaultBasicIngredients
      *
      * @param basicIngredients Given set of basic ingredient names
      */
-    public void setBasicIngredients(Set<String> basicIngredients) throws IllegalArgumentException {
+    public void setBasicIngredients(Set<String> basicIngredients) {
         if (canHaveAsBasicIngredients(basicIngredients)) {
             this.basicIngredients = basicIngredients;
         } else {
-            throw new IllegalArgumentException("At least one of the given basic ingredients is invalid!");
+            this.basicIngredients = defaultBasicIngredients;
         }
     }
 
@@ -143,7 +145,7 @@ public class IngredientType {
      *      | if (canHaveAsStandardTemperature(standardTemperature)):
      *      |   new.getStandardTemperature() == standardTemperature
      *      | else:
-     *      |   new.getStandardTemperature() == new Temperature(20);
+     *      |   new.getStandardTemperature() == new Temperature(20)
      */
     private void setStandardTemperature(Temperature standardTemperature) {
         if (canHaveAsStandardTemperature(standardTemperature)) {
@@ -193,9 +195,9 @@ public class IngredientType {
      *
      * @param basicIngredient Basic ingredient name to check
      *
-     * @return False if string is empty; false if string contains "mixed" or "with"; false if string contains illegal characters; false if each word does not start with capital or non-letter; false if non-first letters of word are capital; false if one word of length < 3; false if multiple words with at least one word of length < 2; true otherwise
+     * @return False if string is empty; false if string contains "mixed" or "with" or "cooled" or "heated"; false if string contains illegal characters; false if each word does not start with capital or non-letter; false if non-first letters of word are capital; false if one word of length < 3; false if multiple words with at least one word of length < 2; true otherwise
      *      | if (basicIngredient == ""): result == false
-     *      | if (basicIngredient.contains("mixed") || basicIngredient.contains("with")): result == false
+     *      | if (basicIngredient.contains("mixed") || basicIngredient.contains("with") || basicIngredient.contains("cooled") || basicIngredient.contains("heated")): result == false
      *      | if (!basicIngredient.matches("[\\p{L}'() ]*"): result == false
      *      | for word in basicIngredient.words():
      *      |  if (!(word[0].isCapital() || word[0].isNonLetter())): result == false
@@ -211,7 +213,7 @@ public class IngredientType {
         }
 
         // Name of basic ingredient cannot contain "mixed" or "with", as this is reserved for mixed name generation
-        if (basicIngredient.toLowerCase().contains("mixed") || basicIngredient.toLowerCase().contains("with")) {
+        if (basicIngredient.toLowerCase().contains("mixed") || basicIngredient.toLowerCase().contains("with") || basicIngredient.toLowerCase().contains("cooled") || basicIngredient.toLowerCase().contains("heated")) {
             return false;
         }
 

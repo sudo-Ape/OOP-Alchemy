@@ -60,7 +60,7 @@ public class Ingredient {
     /**
      * Static default ingredient type as total programming fall-back in case of invalid user input
      */
-    private static final IngredientType defaultIngredientType = new IngredientType(new Temperature(20),State.LIQUID,Set.of("Water"));
+    public static final IngredientType defaultIngredientType = new IngredientType(new Temperature(20),State.LIQUID,Set.of("Water"));
 
     // =================================================================================
     // Constructors
@@ -99,7 +99,7 @@ public class Ingredient {
     }
 
     /**
-     * Create a new basic ingredient with given name, temperature, state, and quantity (all in standard)
+     * Create a new basic ingredient with given name, temperature, state, and quantity (all standard)
      *
      * @param basicIngredient Given basic ingredient name
      * @param temperature Given temperature (equal standard temperature)
@@ -112,7 +112,7 @@ public class Ingredient {
      * @effect Quantity is set to given quantity
      *      | setQuantity(quantity)
      *
-     * @effect Temperature is set to new object based on given temperature input
+     * @effect Temperature is set to a new object based on given temperature input
      *      | setTemperature(new Temperature(temperature))
      *
      * @effect State is set to given state
@@ -120,6 +120,27 @@ public class Ingredient {
      */
     public Ingredient(String basicIngredient, String temperature, State state, Quantity quantity) {
         this(basicIngredient,temperature,state,quantity,state,temperature);
+    }
+
+    /**
+     * Create a new default ingredient with given quantity
+     *
+     * @param quantity Given quantity
+     *
+     * @effect Ingredient type is set to the default ingredient type
+     *      | setIngredientType(Ingredient.defaultIngredientType)
+     *
+     * @effect Temperature is set to the default ingredient type's standard temperature
+     *      | setTemperature(Ingredient.defaultIngredientType.getStandardTemperature())
+     *
+     * @effect Ingredient state is set to the default ingredient type's standard state
+     *      | setStandardState(Ingredient.defaultIngredientState.getStandardState())
+     *
+     * @effect Quantity is set to given quantity
+     *      | setQuantity(quantity)
+     */
+    public Ingredient(Quantity quantity) {
+        this(defaultIngredientType,defaultIngredientType.getStandardTemperature(),defaultIngredientType.getStandardState(),quantity);
     }
 
     /**

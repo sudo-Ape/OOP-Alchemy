@@ -16,6 +16,10 @@ public class Temperature {
      */
     private final int value;
 
+    public static final int maxTemperature = 10000;
+
+    public static final int defaultTemperature = 20;
+
     // =================================================================================
     // Constructor
     // =================================================================================
@@ -51,23 +55,32 @@ public class Temperature {
     // =================================================================================
 
     /**
-     * Return integer temperature based on user-formatted input
+     * Return integer temperature based on user-formatted input of the form "(x,y)",
+     * where x represents coldness and y represents hotness
      *
-     * @param userTemperature User-formatted input, e.g. "(50,0)" for -50
+     * @param userTemperature User-formatted input, e.g. "(50,0)" for coldness 50 (value -50); "(0,50)" for hotness 50 (value 50)
      *
-     * @return After splitting "(x,y)" into integers x and y: -x if y=0; y if x==0; 20 if anything else happens
-     *      | clean = userTemperature.replaceAll("[()\\s]","")
-     *      | parts = clean.split(",")
-     *      | left = Integer.parseInt(parts[0])
-     *      | right = Integer.parseInt(parts[1])
-     *      | if right != 0 and left != 0:
-     *      |   result == 20
-     *      | else if right == 0:
-     *      |   result == -left
+     * @return Integer temperature parsed from "(x,y)": returns defaultTemperature if input is null or not of the form "(digits,digits)";
+     *         returns defaultTemperature if both x and y are non-zero; otherwise clamps each to maxTemperature and returns -x for coldness or y for hotness
+     *      | if userTemperature == null || !userTemperature.matches("\\(\\d+,\\d+\\)"):
+     *      |   result == defaultTemperature
      *      | else:
-     *      |   result == right
+     *      |   clean = userTemperature.replaceAll("[()\\s]","")
+     *      |   parts = clean.split(",")
+     *      |   left = Integer.parseInt(parts[0])
+     *      |   right = Integer.parseInt(parts[1])
+     *      |   if left != 0 && right != 0:
+     *      |     result == defaultTemperature
+     *      |   else:
+     *      |     left = min(left, maxTemperature)
+     *      |     right = min(right, maxTemperature)
+     *      |     result == (left == 0) ? right : -left
      */
     private static int fromUser(String userTemperature) {
+        if (userTemperature == null || !userTemperature.matches("\\(\\d+,\\d+\\)")) { // For total programming
+            return defaultTemperature;
+        }
+
         // Strip parentheses/spaces and split by comma
         String clean = userTemperature.replaceAll("[()\\s]", "");
         String[] parts = clean.split(",");
@@ -77,7 +90,15 @@ public class Temperature {
 
         if (left != 0 && right != 0) {
             // Do not throw an error, but fall back to default case (total programming)
-            return 20;
+            return defaultTemperature;
+        }
+
+        if (left > maxTemperature) {
+            left = maxTemperature;
+        }
+
+        if (right > maxTemperature) {
+            right = maxTemperature;
         }
 
         return (left == 0) ? right : -left;
@@ -100,6 +121,32 @@ public class Temperature {
         }
     }
 
+    /**
+     * Get the hotness of this temperature
+     *
+     * @return Temperature value if positive; zero otherwise
+     *      | if getValue() > 0:
+     *      |   result == getValue()
+     *      | else:
+     *      |   result == 0
+     */
+    public int getHotness() {
+        return getValue() > 0 ? getValue() : 0;
+    }
+
+    /**
+     * Get the coldness of this temperature
+     *
+     * @return Temperature value if negative; zero otherwise
+     *      | if getValue() < 0:
+     *      |   result == getValue()
+     *      | else:
+     *      |   result == 0
+     */
+    public int getColdness() {
+        return getValue() < 0 ? getValue() : 0;
+    }
+
     // =================================================================================
     // Value
     // =================================================================================
@@ -112,6 +159,16 @@ public class Temperature {
     @Basic
     public int getValue() {
         return value;
+    }
+
+    /**
+     * Get the array value description for this temperature
+     *
+     * @return Array with coldness and hotness
+     *      | result == {getColdness(),getHotness()}
+     */
+    public int[] getTemperature() {
+        return {getColdness(),getHotness()};
     }
 
     // =================================================================================

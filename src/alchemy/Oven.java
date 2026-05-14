@@ -147,15 +147,7 @@ public class Oven extends Device {
      */
     @Override
     public void run() throws IllegalStateException {
-        if (getLocation() == null) {
-            throw new IllegalStateException("Oven is not in a (valid) laboratory.");
-        }
-        if (internalIngredients.isEmpty()) {
-            throw new IllegalStateException("The storage of the Oven is empty.");
-        }
-        if (isTerminated()) {
-            throw new IllegalStateException("This oven has been terminated.");
-        }
+        super.run(); // Do repetitive checks here!
 
         Ingredient ingredient = internalIngredients.getFirst();
 

@@ -8,7 +8,7 @@ import java.util.*;
  * Helper class to describe the quantity of ingredients
  *
  * @invar Amounts map must always be valid
- *      | canHaveAsAmounts(amounts)
+ *      | canHaveAsAmounts(getAmountsMap(),getState())
  *
  * @author Casper Vermeeren; Loïck Sansen
  */
@@ -19,7 +19,7 @@ public class Quantity {
     /**
      * State enum associated with this quantity, for checking allowed units
      */
-    private State state;
+    private State state = null;
 
     /**
      * Main map object that holds what amounts of each unit this quantity comprises
@@ -32,7 +32,7 @@ public class Quantity {
      *      | for val in amounts.values:
      *      |   val >= 0
      */
-    private Map<Unit,Integer> amounts;
+    private Map<Unit,Integer> amounts = new HashMap<>();
 
     // =================================================================================
     // Constructors
@@ -64,8 +64,14 @@ public class Quantity {
      * @param state Given state
      * @param unit Given unit
      *
+     * @pre State should be effective
+     *      | state != null
+     *
+     * @pre Unit should be effective
+     *      | unit != null
+     *
      * @effect Creates a new quantity with constructed amounts map of one given unit
-     *      | this(state,Map(unit: 1))
+     *      | this(state, Map.of(unit, 1))
      */
     public Quantity(State state, Unit unit) {
         Map<Unit,Integer> amountsMap = new HashMap<>();
@@ -84,7 +90,7 @@ public class Quantity {
      *
      * @return Map of form (unit,integer) describing this quantity
      */
-    @Basic
+    @Basic @Raw
     public Map<Unit,Integer> getAmountsMap() {
         return new HashMap<>(amounts); // Copy the map, otherwise the user can break things!
     }
@@ -113,8 +119,10 @@ public class Quantity {
      *
      * @param unit Given unit
      *
+     * @pre Given unit should be effective
+     *
      * @return The amount that this quantity has of the given unit; zero if unset
-     *      | result == amounts.getOrDefault(unit)
+     *      | result == amounts.getOrDefault(unit,0)
      */
     public int getAmountOf(Unit unit) {
         // Return the unit if key set, or 0 if this is not in keys
@@ -130,6 +138,9 @@ public class Quantity {
      *
      * @param amounts Amounts map for this quantity
      *
+     * @pre Given amounts map is valid
+     *      | canHaveAsAmounts(amounts,getState())
+     *
      * @post Amounts map is set to given map object
      *      | new.amounts == amounts
      */
@@ -141,6 +152,7 @@ public class Quantity {
      * Check if given amounts map is allowed for the given state
      *
      * @param amounts Given amounts map
+     *
      * @param state Given state to check validity for
      *
      * @return True if map is non-null, if all key units are present in state's allowed units list and all amount values are non-negative; false otherwise
@@ -175,9 +187,19 @@ public class Quantity {
      *
      * @param quantities List of quantities to sum to given state
      *
-     * @param goalState Given state to sum to, determines rounding
+     * @param goalState Given state to sum to, determines which state quantities are rounded
      *
-     * @return New quantity equal to the (rounded) sum of the given quantities, in given goal state
+     * @pre Given list should be effective
+     *      | quantities != null
+     *
+     * @pre Every quantity in the given list should be effective
+     *      | for quantity in quantities:
+     *      |   quantity != null
+     *
+     * @pre Given goal state should be effective
+     *      | goalState != null
+     *
+     * @return New quantity equal to the (rounded) sum of the given quantities, in given goal state; non-goal state quantity sums are floored down in number of spoons
      *      | Formal definition of this method is too complex.
      */
     public static Quantity sum(List<Quantity> quantities, State goalState) {
@@ -234,6 +256,12 @@ public class Quantity {
      *
      * @param goalState Goal state for output quantity
      *
+     * @pre Given other quantity should be effective
+     *      | other != null
+     *
+     * @pre Given goal state should be effective
+     *      | gaolState != null
+     *
      * @return New quantity equal to this quantity plus given other quantity, in goal state
      *      | result == Quantity.sum([this,other],goalState)
      */
@@ -246,6 +274,9 @@ public class Quantity {
      *
      * @pre This quantity and given quantity are of equal state
      *      | getState() == other.getState()
+     *
+     * @pre Given other quantity should be effective
+     *      | other != null
      *
      * @param other Other quantity to sum with
      *
@@ -292,6 +323,9 @@ public class Quantity {
      * @pre Other quantity is less than this quantity
      *      | other.lessThan(this)
      *
+     * @pre Given other quantity should be effective
+     *      | other != null
+     *
      * @return New quantity equal to this quantity minus given other quantity
      *      | resultSpoons = getSpoons() - other.getSpoons()
      *      | (backwards) for unit in getState().getAllowedUnits():
@@ -323,6 +357,10 @@ public class Quantity {
      * Get a quantity equal to this quantity, but with state changed to given newState
      *
      * @param newState Given new state
+     *
+     * @pre Given new state should be effective
+     *      | newState !=null
+     *
      * @return New quantity with same contents (possibly rounded by state/unit allowances) and new state
      *      | result == Quantity.sum([this],newState)
      */
@@ -335,8 +373,11 @@ public class Quantity {
      *
      * @param unit Given unit
      *
-     * @return Whether this quantity's spoon value is less than or equal to the given unit's spoon value
-     *      | result == (getSpoons() <= unit.getSpoons())
+     * @pre Given unit should be effective
+     *      | unit != null
+     *
+     * @return Whether this quantity's spoon value is less than or equal to the given unit's spoon value plus an error boundary due to floating-point precision
+     *      | result == (getSpoons() <= unit.getSpoons() + 0.000001)
      */
     public boolean lessThan(Unit unit) {
         double epsilon = 0.000001; // Fix floating-point precision errors
@@ -348,8 +389,11 @@ public class Quantity {
      *
      * @param other Other quantity
      *
-     * @return Whether this quantity's spoon value is less than or equal to the given quantity's spoon value
-     *      | result == (getSpoons() <= other.getSpoons())
+     * @pre Given other quantity should be effective
+     *      | other != null
+     *
+     * @return Whether this quantity's spoon value is less than or equal to the given quantity's spoon value plus an error boundary due to floating-point precision
+     *      | result == (getSpoons() <= other.getSpoons() + 0.000001)
      */
     public boolean lessThan(Quantity other) {
         double epsilon = 0.000001; // Fix floating-point precision errors
@@ -362,12 +406,18 @@ public class Quantity {
      * @param ingredient The ingredient to select a unit for
      *
      * @return The minimum appropriate Unit: where the ingredient's quantity fits into the resulting Unit, but not a smaller Unit
-     *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().itemBefore(result))
+     *      | ingredient.getQuantity().lessThan(result) && !ingredient.getQuantity().lessThan(ingredient.getState().getAllowedUnits().get(ingredient.getState().getAllowedUnits().indexOf(result)-1)))
+     *
+     * @pre Given ingredient should be effective
+     *      | ingredient != null
      *
      * @pre Given ingredient should fit into a container
      *      | ∃ unit in Unit.values(): ingredient.getQuantity().lessThan(unit)
+     *
+     * @pre Given ingredient should be effective and non-terminated
+     *      | ingredient != null && !ingredient.isTerminated()
      */
-    public static Unit selectAppropriateUnit(Ingredient ingredient) throws IllegalArgumentException {
+    public static Unit selectAppropriateUnit(Ingredient ingredient) {
         List<Unit> allowed = ingredient.getState().getAllowedUnits();
 
         // Loop forwards from second to second-to-last
@@ -387,7 +437,7 @@ public class Quantity {
      * Check whether this quantity is equal to zero
      *
      * @return Whether this quantity is equal to zero
-     *      | getSpoons() == 0
+     *      | result == (getSpoons() == 0)
      */
     @Basic
     public boolean isZero() {

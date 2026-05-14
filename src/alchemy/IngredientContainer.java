@@ -25,7 +25,7 @@ public class IngredientContainer {
     /**
      * The unit capacity of this ingredient container
      */
-    private Unit capacity;
+    private Unit capacity = null;
 
     /**
      * The ingredient currently stored in this container, or null if the container is empty
@@ -35,7 +35,7 @@ public class IngredientContainer {
     /**
      * Boolean indicating whether this container has been terminated
      */
-    private boolean terminated;
+    private boolean terminated = false;
 
     // =================================================================================
     // Constructors
@@ -131,21 +131,15 @@ public class IngredientContainer {
             throw new IllegalStateException("This container has been terminated.");
         }
 
-        // 1. Basic check
-        if (capacity == null) throw new IllegalArgumentException("Null capacity");
-
-        // 2. Unit restriction: No containers for smallest/largest units
-        for (State state : State.values()) {
-            if (capacity == state.getAllowedUnits().getFirst() || capacity == state.getAllowedUnits().getLast()){
-                throw new IllegalArgumentException("No physical container exists for this unit.");
-            }
+        if (!canHaveAsCapacity(capacity)) {
+            throw new IllegalArgumentException("Given capacity is invalid.");
         }
 
         this.capacity = capacity;
     }
 
     /**
-     * Check whether given unit capacity can be used
+     * Check whether the given unit capacity can be used
      *
      * @param capacity Given unit capacity
      *
@@ -246,10 +240,17 @@ public class IngredientContainer {
      *
      * @throws IllegalArgumentException If adding the ingredient would exceed this container's capacity
      *      | !ingredient.getQuantity().lessThan(getCapacity()) || getContents() != null && !getContents().getQuantity().plus(ingredient.getQuantity()).lessThan(getCapacity())
+     *
+     * @throws IllegalArgumentException If ingredient's state does not allow container capacity as a unit
+     *      | !ingredient.getState().getAllowedUnits().contains(getCapacity())
      */
     public void add(Ingredient ingredient) throws IllegalArgumentException, IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("This container has been terminated.");
+        }
+
+        if (!ingredient.getState().getAllowedUnits().contains(getCapacity())) {
+            throw new IllegalArgumentException("This container cannot hold an ingredient of that state.");
         }
 
         if (contents != null && contents.isTerminated()) { // Safe-check if this container's contents have been terminated at some point
